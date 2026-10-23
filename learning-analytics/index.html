@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Math Learning Analytics</title>
+<meta name="description" content="Learning analytics dashboard measuring the impact of a math module, by Reem Eyada.">
+<meta name="author" content="Reem Eyada">
+<meta property="og:title" content="Math Learning Analytics | Data Analysis Dashboard">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600&family=Source+Serif+4:opsz,wght@8..60,400&display=swap">
+<style>
+:root {
+  --color-bg: #f7f7f5; --color-panel: #ffffff; --color-fg: #1f2328; --color-fg-muted: #636c76;
+  --color-border-line: #e3e3df; --color-ok: #1a7f37; --color-warn: #9a6700; --color-bad: #c4312b;
+  --cds-text-secondary: #636c76; --cds-chart-muted: #c3c3b8; --cds-chart-status-critical: #d9443a;
+  --cds-chart-grid: #ececea; --cds-chart-axis: #b8b8b2; --cds-chart-reference: #8a8a84;
+  --cds-surface-popover: #ffffff; --cds-border: #dcdcd6; --cds-shadow-popover: 0 4px 16px rgba(0,0,0,.10);
+  --series-1: #2b6fd6;
+  --cds-font-size-caption: 0.8125rem; --cds-font-size-body: 0.9375rem; --cds-font-size-heading: 1.0625rem; --cds-font-size-title: 1.875rem;
+  --cds-font-weight-medium: 600;
+  --cds-gap-xs: 4px; --cds-gap-sm: 8px; --cds-gap-md: 16px; --cds-gap-lg: 24px; --cds-gap-xl: 40px;
+  --cds-pad-xs: 4px; --cds-pad-sm: 8px; --cds-pad-md: 14px; --cds-pad-lg: 20px; --cds-pad-xl: 32px;
+  --cds-radius: 8px; --cds-dur-slow: 400ms; --cds-ease-out: cubic-bezier(.2,.8,.2,1);
+  --font-sans: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --font-serif: "Source Serif 4", Georgia, serif;
+}
+@media (prefers-color-scheme: dark) { :root {
+  --color-bg: #141517; --color-panel: #1c1d20; --color-fg: #e9e9e6; --color-fg-muted: #9b9b96;
+  --color-border-line: #2e2f33; --color-ok: #57c27a; --color-warn: #d9a838; --color-bad: #ff7b72;
+  --cds-text-secondary: #9b9b96; --cds-chart-muted: #5c5c58; --cds-chart-status-critical: #e5534b;
+  --cds-chart-grid: #2a2b2e; --cds-chart-axis: #4a4b4f; --cds-chart-reference: #8f8f8a;
+  --cds-surface-popover: #232428; --cds-border: #3a3b40; --cds-shadow-popover: 0 4px 16px rgba(0,0,0,.4);
+  --series-1: #6aa1ff; color-scheme: dark; } }
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--color-bg); color: var(--color-fg); font-family: var(--font-sans); }
+#dash-root { padding: 32px max(16px, env(safe-area-inset-right, 0px)) 56px max(16px, env(safe-area-inset-left, 0px)); }
+.dash-skeleton { color: transparent; background: var(--color-border-line); border-radius: 4px; }
+[hidden] { display: none !important; }
+</style>
+<style>
+.la { display: grid; gap: var(--cds-gap-lg); font-family: var(--font-sans); max-width: 1180px; margin-inline: auto; }
+.la-head { display: grid; gap: var(--cds-gap-sm); }
+.la-badge { justify-self: start; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); border: 1px dashed var(--color-border-line); border-radius: var(--cds-radius); padding: 2px var(--cds-pad-sm); }
+.la-title { font-family: var(--font-serif); font-weight: 400; font-size: var(--cds-font-size-title); margin: 0; line-height: 1.2; }
+.la-take { font-size: var(--cds-font-size-body); color: var(--color-fg); margin: 0; max-width: 72ch; line-height: 1.55; }
+.la .num { font-variant-numeric: tabular-nums; font-weight: 600; }
+.la-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 10.5rem), 1fr)); gap: var(--cds-gap-md); }
+.la-kpi { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-md) var(--cds-pad-lg); display: grid; gap: var(--cds-gap-xs); align-content: start; }
+.la-kpi .lbl { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.la-kpi .big { font-family: var(--font-serif); font-weight: 400; font-size: var(--cds-font-size-title); font-variant-numeric: tabular-nums; line-height: 1.1; }
+.la-kpi .sub { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.la-kpi .sub.good { color: var(--color-ok); }
+.la-kpi .sub.warn { color: var(--color-bad); }
+.la-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap: var(--cds-gap-md); }
+.la-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); display: grid; gap: var(--cds-gap-sm); align-content: start; min-width: 0; }
+.la-card h2 { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); margin: 0; }
+.la-card .note { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin: 0; }
+.la-chart { position: relative; min-height: 240px; }
+.la-chart svg { display: block; overflow: visible; }
+.la-chart text { font-family: var(--font-sans); }
+.la-tip { position: absolute; pointer-events: none; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); border-radius: var(--cds-radius); box-shadow: var(--cds-shadow-popover); padding: var(--cds-pad-xs) var(--cds-pad-sm); font-size: var(--cds-font-size-caption); white-space: nowrap; z-index: 2; }
+.la-tip .t { color: var(--cds-text-secondary); }
+.la-tip .sw { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 6px; }
+.la-fail { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: inherit; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.la-fail::before { content: ""; width: 0.375rem; height: 0.375rem; border-radius: 50%; background: var(--color-bad); }
+.la-legend { display: flex; flex-wrap: wrap; gap: var(--cds-gap-md); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.la-legend span::before { content: ""; display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; background: var(--sw); }
+.la-tablebox { max-height: 360px; overflow: auto; }
+.la table { width: 100%; border-collapse: collapse; font-size: var(--cds-font-size-body); font-variant-numeric: tabular-nums; }
+.la th { position: sticky; top: 0; background: var(--color-panel); text-align: left; font-weight: var(--cds-font-weight-medium); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); padding: var(--cds-pad-xs) var(--cds-pad-sm); border-bottom: 1px solid var(--color-border-line); }
+.la td { padding: var(--cds-pad-xs) var(--cds-pad-sm); border-bottom: 1px solid var(--color-border-line); }
+.la td.n, .la th.n { text-align: right; }
+.la td.low { color: var(--color-bad); font-weight: 600; }
+@media (max-width: 560px) { .la .hide-narrow { display: none; } }
+.la-recs { display: grid; gap: var(--cds-gap-sm); margin: 0; padding-left: 1.2em; line-height: 1.55; }
+.la-method { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); line-height: 1.55; margin: 0; max-width: 90ch; }
+[data-dash-source-state=empty] { color: transparent; }
+[data-dash-source-state=refreshing] { opacity: .5; transition: opacity var(--cds-dur-slow); }
+@media (prefers-reduced-motion: no-preference) {
+  .la-anim { animation: la-in var(--cds-dur-slow) var(--cds-ease-out) both; }
+  @keyframes la-in { from { opacity: 0; } to { opacity: 1; } }
+}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+</head>
+<body>
+<script type="text/csv" id="students-csv">
+student,class,pre,post,completion,minutes,Integers,Fractions,Linear equations,Ratios,Geometry
+S001,7A,55,72,79,110,73,64,69,77,78
+S002,7A,61,71,85,107,86,69,63,59,55
+S003,7A,47,65,86,81,77,54,55,70,58
+S004,7A,79,97,99,112,99,88,84,100,97
+S005,7A,53,76,75,66,78,72,67,66,74
+S006,7A,74,88,77,35,89,86,76,78,93
+S007,7A,66,91,100,123,100,75,84,88,85
+S008,7A,43,67,75,66,59,49,57,81,70
+S009,7A,35,46,87,20,45,48,43,49,46
+S010,7A,63,88,91,143,100,69,86,98,90
+S011,7A,34,42,94,76,49,44,20,57,44
+S012,7A,56,77,91,105,94,66,62,87,75
+S013,7A,47,67,100,123,64,60,54,67,76
+S014,7A,46,59,64,133,72,62,54,64,58
+S015,7A,60,81,80,112,94,75,75,88,95
+S016,7A,62,79,77,82,94,70,70,96,56
+S017,7A,45,66,88,102,71,65,56,64,83
+S018,7A,62,78,81,78,85,50,62,88,67
+S019,7A,57,88,94,124,82,79,73,95,95
+S020,7A,26,47,62,128,43,42,45,48,47
+S021,7A,68,96,81,99,100,88,100,89,100
+S022,7A,55,76,92,99,89,58,52,83,66
+S023,7A,46,69,100,51,89,55,57,62,73
+S024,7A,77,100,100,68,100,78,99,100,93
+S025,7A,63,78,100,107,95,84,78,79,70
+S026,7A,70,97,84,98,100,73,82,84,100
+S027,7A,62,85,82,77,94,90,73,95,95
+S028,7A,77,85,94,75,84,63,82,77,83
+S029,7A,56,75,74,94,97,69,67,85,71
+S030,7A,43,53,97,78,56,55,47,55,57
+S031,7B,54,69,60,60,84,58,50,65,55
+S032,7B,51,61,87,60,72,50,33,69,57
+S033,7B,25,47,86,69,61,47,40,52,56
+S034,7B,60,86,53,109,100,78,70,100,70
+S035,7B,58,88,69,168,100,81,80,97,79
+S036,7B,51,79,94,104,85,65,64,88,78
+S037,7B,42,76,100,70,89,49,69,82,87
+S038,7B,57,72,89,93,88,69,54,85,84
+S039,7B,35,61,86,75,66,47,66,71,49
+S040,7B,36,77,96,146,91,64,67,62,69
+S041,7B,51,74,72,111,86,71,67,78,69
+S042,7B,61,80,70,96,88,73,69,82,79
+S043,7B,50,81,88,57,92,73,73,75,64
+S044,7B,53,72,92,67,59,58,73,71,59
+S045,7B,43,71,89,111,91,71,59,78,82
+S046,7B,64,87,67,126,100,79,84,94,92
+S047,7B,49,80,99,171,89,95,65,89,86
+S048,7B,52,78,85,60,95,78,66,87,80
+S049,7B,54,83,79,97,83,72,71,73,78
+S050,7B,28,57,90,75,65,49,34,74,59
+S051,7B,65,77,79,69,91,78,50,79,80
+S052,7B,31,47,67,40,44,41,37,54,51
+S053,7B,70,90,64,130,90,75,77,92,92
+S054,7B,33,55,82,58,61,48,37,63,56
+S055,7B,51,58,80,75,58,52,34,62,57
+S056,7B,35,62,78,87,75,56,43,63,59
+S057,7B,61,77,72,104,82,65,56,78,71
+S058,7B,53,92,76,111,97,95,81,100,71
+S059,7B,43,84,90,102,95,88,78,94,86
+S060,7B,50,80,67,110,80,76,85,80,78
+S061,8A,77,92,71,96,100,92,74,100,100
+S062,8A,63,86,76,103,88,85,70,82,90
+S063,8A,79,97,73,95,100,93,97,100,91
+S064,8A,90,100,93,95,100,80,100,100,88
+S065,8A,45,56,98,46,64,47,43,49,54
+S066,8A,46,64,86,93,70,51,53,62,75
+S067,8A,72,81,75,92,82,72,71,87,84
+S068,8A,88,100,82,74,93,90,89,100,100
+S069,8A,60,80,83,106,73,67,68,74,70
+S070,8A,71,90,91,76,100,88,77,81,88
+S071,8A,68,86,81,79,87,85,89,84,85
+S072,8A,61,84,86,141,86,78,72,72,94
+S073,8A,74,86,92,43,98,83,62,86,96
+S074,8A,56,60,63,64,71,68,51,64,76
+S075,8A,57,75,89,75,75,60,65,79,63
+S076,8A,61,75,88,79,82,66,71,88,70
+S077,8A,73,91,83,72,100,82,78,95,77
+S078,8A,63,70,87,75,62,64,60,68,75
+S079,8A,60,65,89,77,68,59,60,66,65
+S080,8A,55,68,100,104,95,57,56,71,74
+S081,8A,48,65,90,32,78,80,55,69,70
+S082,8A,67,80,65,145,60,80,65,89,95
+S083,8A,63,71,75,87,74,70,59,74,68
+S084,8A,74,93,80,110,100,78,93,99,83
+S085,8A,76,98,60,105,100,99,88,99,84
+S086,8A,75,91,78,96,100,90,76,93,72
+S087,8A,58,73,100,115,80,80,58,81,84
+S088,8A,63,80,72,132,87,75,77,100,73
+S089,8A,56,73,67,110,86,65,65,63,77
+S090,8A,44,54,74,74,69,49,39,60,65
+S091,8B,55,81,99,106,79,95,87,67,79
+S092,8B,60,82,91,124,82,77,78,75,72
+S093,8B,55,70,78,37,82,58,51,69,68
+S094,8B,47,77,93,95,99,65,62,59,90
+S095,8B,46,60,89,94,72,54,33,64,68
+S096,8B,33,59,85,119,71,63,45,68,54
+S097,8B,64,94,80,71,100,87,73,90,94
+S098,8B,66,89,89,108,100,80,73,98,88
+S099,8B,52,75,78,78,86,59,66,78,65
+S100,8B,64,89,77,87,100,77,81,84,100
+S101,8B,49,75,73,131,100,49,60,81,72
+S102,8B,47,62,83,160,77,42,59,59,61
+S103,8B,70,78,63,99,95,78,59,87,80
+S104,8B,63,85,78,27,99,86,53,88,87
+S105,8B,86,100,77,66,100,90,97,96,100
+S106,8B,49,59,72,100,76,55,43,63,65
+S107,8B,43,68,90,92,73,45,66,73,66
+S108,8B,52,66,76,103,68,55,49,59,69
+S109,8B,39,61,68,115,80,57,43,63,60
+S110,8B,34,52,84,77,61,52,46,61,55
+S111,8B,52,71,78,94,78,51,56,73,61
+S112,8B,55,89,80,110,76,81,62,99,100
+S113,8B,25,46,89,99,58,22,41,51,44
+S114,8B,48,70,75,114,74,46,58,74,74
+S115,8B,44,67,91,94,85,77,48,54,72
+S116,8B,73,94,93,123,96,95,75,81,84
+S117,8B,85,100,72,153,100,88,98,100,89
+S118,8B,71,92,85,78,97,89,74,79,72
+S119,8B,40,60,82,72,72,55,42,56,41
+S120,8B,53,75,89,110,82,76,63,83,78
+</script>
+<script>
+(function () {
+  const text = document.getElementById("students-csv").textContent.trim().split("\n");
+  const cols = text[0].split(",");
+  const students = text.slice(1).map(l => { const v = l.split(","); const o = {}; cols.forEach((c, i) => o[c] = v[i]); return o; });
+  const store = { students: students };
+  const calcs = [], listeners = [];
+  window.dash = {
+    colors: ["var(--series-1)"],
+    calc(id, def) { calcs.push([id, def]); },
+    data(id) { return id in store ? { status: "ok", data: store[id] } : { status: "loading", data: [] }; },
+    onData(fn) { listeners.push(fn); },
+    _run() {
+      calcs.forEach(([id, def]) => { store[id] = def.fn(...def.inputs.map(i => store[i])); });
+      listeners.forEach(fn => fn());
+    }
+  };
+  let t;
+  window.addEventListener("resize", () => { clearTimeout(t); t = setTimeout(() => listeners.forEach(fn => fn()), 150); });
+})();
+</script>
+<div id="dash-root">
+
+
+<div class="la">
+  <div class="la-head">
+    <span class="la-badge">Sample project · synthetic data for 120 students</span>
+    <h1 class="la-title" id="title">Math learning analytics: one term, four classes</h1>
+    <p class="la-take" id="takeaway">
+      Average scores rose from <span class="num dash-skeleton" data-source="kpis" data-field="pre" data-row="0">—</span>
+      to <span class="num dash-skeleton" data-source="kpis" data-field="post" data-row="0">—</span> after the blended module.
+      Linear equations is the weakest topic at <span class="num dash-skeleton" data-source="byTopic" data-field="score" data-where="topic=Linear%20equations">—</span>,
+      and <span class="num dash-skeleton" data-source="kpis" data-field="atRisk" data-row="0">—</span> students still scored below 60 and need targeted support.
+    </p>
+  </div>
+
+  <div class="la-kpis" id="kpis">
+    <div class="la-kpi"><span class="lbl">Avg post-test score</span><span class="big dash-skeleton" data-source="kpis" data-field="post" data-row="0">—</span><span class="sub">out of 100</span></div>
+    <div class="la-kpi"><span class="lbl">Avg pre-test score</span><span class="big dash-skeleton" data-source="kpis" data-field="pre" data-row="0">—</span><span class="sub">before the module</span></div>
+    <div class="la-kpi"><span class="lbl">Avg learning gain</span><span class="big dash-skeleton" data-source="kpis" data-field="gain" data-row="0">—</span><span class="sub good">points, post minus pre</span></div>
+    <div class="la-kpi"><span class="lbl">Avg module completion</span><span class="big dash-skeleton" data-source="kpis" data-field="completion" data-row="0">—</span><span class="sub">of activities finished</span></div>
+    <div class="la-kpi"><span class="lbl">Students below 60</span><span class="big dash-skeleton" data-source="kpis" data-field="atRisk" data-row="0">—</span><span class="sub warn">on the post-test</span></div>
+  </div>
+
+  <div class="la-grid">
+    <section class="la-card" id="classes">
+      <h2>Every class improved, 7B the most</h2>
+      <p class="note">Average pre-test and post-test score by class. The line is the gain.</p>
+      <div class="la-legend"><span id="lg-pre">Pre-test</span><span id="lg-post">Post-test</span></div>
+      <div class="la-chart dash-skeleton" id="ch-class" data-source="byClass"></div>
+    </section>
+    <section class="la-card" id="topics">
+      <h2>Two topics sit below the mastery target</h2>
+      <p class="note">Average post-module score by topic. Dashed line: mastery target of 70.</p>
+      <div class="la-chart dash-skeleton" id="ch-topic" data-source="byTopic"></div>
+    </section>
+  </div>
+
+  <div class="la-grid">
+    <section class="la-card" id="completion">
+      <h2>Finishing the module pays off</h2>
+      <p class="note">Average gain in points, grouped by how much of the module each student completed.</p>
+      <div class="la-chart dash-skeleton" id="ch-band" data-source="bands"></div>
+    </section>
+    <section class="la-card" id="actions">
+      <h2>Recommended next steps</h2>
+      <p class="note">What the data suggests for the next teaching cycle.</p>
+      <ol class="la-recs">
+        <li>Re-teach <b>linear equations</b> with the balance-scale activity first. It averages <span class="num dash-skeleton" data-source="byTopic" data-field="score" data-where="topic=Linear%20equations">—</span>, the lowest of five topics.</li>
+        <li>Add worked examples and visual models for <b>fractions</b>, currently at <span class="num dash-skeleton" data-source="byTopic" data-field="score" data-where="topic=Fractions">—</span>.</li>
+        <li>Raise completion: students who finished 90% or more gained <span class="num dash-skeleton" data-source="bands" data-field="gain" data-where="band=90%25%2B">—</span> points, against <span class="num dash-skeleton" data-source="bands" data-field="gain" data-where="band=Under%2070%25">—</span> for those under 70%.</li>
+        <li>Run small-group sessions for the <span class="num dash-skeleton" data-source="kpis" data-field="atRisk" data-row="0">—</span> students listed below, starting with their weakest topic.</li>
+      </ol>
+    </section>
+  </div>
+
+  <section class="la-card" id="support">
+    <h2>Students who need support</h2>
+    <p class="note">Post-test below 60, lowest first. Weakest topic is the lowest of each student's five topic scores.</p>
+    <div class="la-tablebox">
+      <table data-source="atRisk" data-row-key="student" id="tbl">
+        <thead><tr>
+          <th data-field="student">Student</th>
+          <th data-field="class">Class</th>
+          <th class="n hide-narrow" data-field="pre">Pre</th>
+          <th class="n" data-field="post">Post</th>
+          <th class="n hide-narrow" data-field="completion">Completion %</th>
+          <th data-field="weakest">Weakest topic</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <p class="la-method" id="method">Method: pre-test and post-test are scored out of 100. Gain is post minus pre per student, then averaged. Completion is the share of module activities finished. All figures are computed from a synthetic dataset built for this portfolio sample; no real student data is used. Analysis and design by Reem Eyada.</p>
+</div>
+
+<script>
+const num = (v) => Number(v);
+const r1 = (v) => Math.round(v * 10) / 10;
+const TOPICS = ["Integers", "Fractions", "Linear equations", "Ratios", "Geometry"];
+
+dash.calc("kpis", {
+  title: "Headline figures",
+  description: "Averages across all students, and the count with a post-test below 60.",
+  inputs: ["students"],
+  fn: (students) => {
+    const n = students.length;
+    const avg = (k) => students.reduce((s, r) => s + Number(r[k]), 0) / n;
+    return [{
+      pre: Math.round(avg("pre") * 10) / 10,
+      post: Math.round(avg("post") * 10) / 10,
+      gain: Math.round((avg("post") - avg("pre")) * 10) / 10,
+      completion: Math.round(avg("completion")),
+      atRisk: students.filter((r) => Number(r.post) < 60).length
+    }];
+  }
+});
+
+dash.calc("byClass", {
+  title: "Scores by class",
+  description: "Average pre-test, post-test and gain for each class.",
+  inputs: ["students"],
+  fn: (students) => ["7A", "7B", "8A", "8B"].map((c) => {
+    const rs = students.filter((r) => r.class === c);
+    const avg = (k) => rs.reduce((s, r) => s + Number(r[k]), 0) / rs.length;
+    return { class: c, pre: Math.round(avg("pre") * 10) / 10, post: Math.round(avg("post") * 10) / 10, gain: Math.round((avg("post") - avg("pre")) * 10) / 10, students: rs.length };
+  })
+});
+
+dash.calc("byTopic", {
+  title: "Score by topic",
+  description: "Average post-module score in each of the five topics.",
+  inputs: ["students"],
+  fn: (students) => ["Integers", "Fractions", "Linear equations", "Ratios", "Geometry"].map((t) => ({
+    topic: t,
+    score: Math.round(students.reduce((s, r) => s + Number(r[t]), 0) / students.length * 10) / 10
+  }))
+});
+
+dash.calc("bands", {
+  title: "Gain by completion",
+  description: "Average gain for students grouped by share of the module completed.",
+  inputs: ["students"],
+  fn: (students) => [["Under 70%", 0, 70], ["70–89%", 70, 90], ["90%+", 90, 101]].map(([band, lo, hi]) => {
+    const rs = students.filter((r) => Number(r.completion) >= lo && Number(r.completion) < hi);
+    return { band, students: rs.length, gain: Math.round(rs.reduce((s, r) => s + Number(r.post) - Number(r.pre), 0) / rs.length * 10) / 10 };
+  })
+});
+
+dash.calc("atRisk", {
+  title: "Students below 60",
+  description: "Students whose post-test is under 60, with their lowest topic.",
+  inputs: ["students"],
+  fn: (students) => students
+    .filter((r) => Number(r.post) < 60)
+    .map((r) => {
+      const topics = ["Integers", "Fractions", "Linear equations", "Ratios", "Geometry"];
+      const weakest = topics.reduce((a, b) => (Number(r[b]) < Number(r[a]) ? b : a));
+      return { student: r.student, class: r.class, pre: Number(r.pre), post: Number(r.post), completion: Number(r.completion), weakest };
+    })
+    .sort((a, b) => a.post - b.post)
+});
+
+window.laTip = (box) => {
+  let tip = box.querySelector(".la-tip");
+  if (!tip) { tip = document.createElement("div"); tip.className = "la-tip"; tip.hidden = true; box.appendChild(tip); }
+  return {
+    show(ev, title, lines) {
+      tip.textContent = "";
+      const t = document.createElement("div"); t.className = "t"; t.textContent = title; tip.appendChild(t);
+      lines.forEach(([color, label, value]) => {
+        const d = document.createElement("div");
+        if (color) { const s = document.createElement("span"); s.className = "sw"; s.style.background = color; d.appendChild(s); }
+        d.appendChild(document.createTextNode(label + " " + value));
+        tip.appendChild(d);
+      });
+      tip.hidden = false;
+      const b = box.getBoundingClientRect();
+      let x = ev.clientX - b.left + 12, y = ev.clientY - b.top + 12;
+      if (x + tip.offsetWidth > b.width) x = ev.clientX - b.left - tip.offsetWidth - 12;
+      if (x < 0) x = 0;
+      tip.style.left = x + "px"; tip.style.top = y + "px";
+    },
+    hide() { tip.hidden = true; }
+  };
+};
+
+window.laFail = (el) => { el.textContent = ""; const f = document.createElement("div"); f.className = "la-fail"; f.textContent = "Failed to load"; el.appendChild(f); };
+window.laPlain = (el) => { el.classList.remove("dash-skeleton"); };
+</script>
+
+<script>
+const fmt1 = d3.format(".1f");
+let animated = false;
+
+function fillMarks() {
+  document.querySelectorAll(".la [data-source][data-field]:not(th)").forEach((el) => {
+    if (el.closest("table")) return;
+    const src = el.dataset.source, field = el.dataset.field;
+    const d = dash.data(src);
+    if (d.status !== "ok") { if (d.status !== "loading") { el.textContent = "—"; el.classList.remove("dash-skeleton"); } return; }
+    let row;
+    if (el.dataset.row !== undefined) row = d.data[+el.dataset.row];
+    else if (el.dataset.where) {
+      const pairs = el.dataset.where.split("&").map((p) => p.split("=").map(decodeURIComponent));
+      row = d.data.find((r) => pairs.every(([k, v]) => String(r[k]) === v));
+    }
+    el.classList.remove("dash-skeleton");
+    if (!row) { el.textContent = "—"; return; }
+    const v = row[field];
+    if (field === "completion") el.textContent = Math.round(v) + "%";
+    else if (field === "atRisk") el.textContent = String(v);
+    else if (field === "gain") el.textContent = (v > 0 ? "+" : "") + fmt1(v);
+    else el.textContent = fmt1(v);
+  });
+}
+
+function axisStyle(g) {
+  g.attr("font-size", null).attr("font-family", null);
+  g.selectAll("text").attr("fill", "var(--color-fg-muted)").style("font-size", "var(--cds-font-size-caption)");
+  g.selectAll("line").attr("stroke", "var(--cds-chart-grid)");
+  g.select(".domain").remove();
+}
+
+function drawClass() {
+  const box = document.getElementById("ch-class");
+  const d = dash.data("byClass");
+  box.querySelectorAll("svg,.la-fail").forEach((n) => n.remove());
+  if (d.status === "error" || d.status === "connect") { laPlain(box); laFail(box); return; }
+  if (d.status !== "ok") return;
+  laPlain(box);
+  document.getElementById("lg-pre").style.setProperty("--sw", "var(--cds-chart-muted)");
+  document.getElementById("lg-post").style.setProperty("--sw", dash.colors[0]);
+  const rows = d.data;
+  const W = box.clientWidth || 360, H = 240, m = { t: 8, r: 52, b: 28, l: 34 };
+  const lo = Math.floor((d3.min(rows, (r) => r.pre) - 5) / 10) * 10;
+  const hi = Math.ceil((d3.max(rows, (r) => r.post) + 5) / 10) * 10;
+  const x = d3.scaleLinear([lo, hi], [m.l, W - m.r]);
+  const y = d3.scaleBand(rows.map((r) => r.class), [m.t, H - m.b]).padding(0.4);
+  const svg = d3.select(box).append("svg").attr("width", "100%").attr("viewBox", `0 0 ${W} ${H}`).attr("height", H);
+  svg.append("g").attr("transform", `translate(0,${H - m.b})`).call(d3.axisBottom(x).ticks(Math.max(3, Math.floor(W / 80))).tickSize(-(H - m.t - m.b))).call(axisStyle);
+  svg.append("g").attr("transform", `translate(${m.l - 6},0)`).call(d3.axisLeft(y).tickSize(0)).call(axisStyle);
+  const tip = laTip(box);
+  const g = svg.append("g").selectAll("g").data(rows).join("g").attr("transform", (r) => `translate(0,${y(r.class) + y.bandwidth() / 2})`).attr("class", animated ? "" : "la-anim");
+  g.append("line").attr("x1", (r) => x(r.pre)).attr("x2", (r) => x(r.post)).attr("stroke", dash.colors[0]).attr("stroke-opacity", 0.35).attr("stroke-width", 6).attr("stroke-linecap", "round");
+  g.append("circle").attr("cx", (r) => x(r.pre)).attr("r", 6).attr("fill", "var(--cds-chart-muted)");
+  g.append("circle").attr("cx", (r) => x(r.post)).attr("r", 7).attr("fill", dash.colors[0]);
+  g.append("text").attr("x", (r) => x(r.post) + 12).attr("dy", "0.35em").attr("fill", "var(--color-fg)").style("font-size", "var(--cds-font-size-caption)").style("font-variant-numeric", "tabular-nums").text((r) => "+" + fmt1(r.gain));
+  g.append("rect").attr("x", m.l).attr("width", W - m.l - m.r).attr("y", -y.bandwidth() / 2).attr("height", y.bandwidth()).attr("fill", "transparent")
+    .on("mousemove", (ev, r) => tip.show(ev, "Class " + r.class, [["var(--cds-chart-muted)", "Pre-test", fmt1(r.pre)], [dash.colors[0], "Post-test", fmt1(r.post)], [null, "Gain", "+" + fmt1(r.gain)]]))
+    .on("mouseleave", () => tip.hide());
+}
+
+function drawTopic() {
+  const box = document.getElementById("ch-topic");
+  const d = dash.data("byTopic");
+  box.querySelectorAll("svg,.la-fail").forEach((n) => n.remove());
+  if (d.status === "error" || d.status === "connect") { laPlain(box); laFail(box); return; }
+  if (d.status !== "ok") return;
+  laPlain(box);
+  const rows = d.data.slice().sort((a, b) => b.score - a.score);
+  const W = box.clientWidth || 360, H = 240, TARGET = 70;
+  const svg = d3.select(box).append("svg").attr("width", "100%").attr("viewBox", `0 0 ${W} ${H}`).attr("height", H);
+  const probe = svg.append("text").style("font-size", "var(--cds-font-size-caption)");
+  const lw = d3.max(rows, (r) => { probe.text(r.topic); return probe.node().getComputedTextLength(); }) || 90;
+  probe.remove();
+  const m = { t: 20, r: 40, b: 26, l: lw + 12 };
+  const x = d3.scaleLinear([0, 100], [m.l, W - m.r]);
+  const y = d3.scaleBand(rows.map((r) => r.topic), [m.t, H - m.b]).padding(0.35);
+  svg.append("g").attr("transform", `translate(0,${H - m.b})`).call(d3.axisBottom(x).ticks(Math.max(3, Math.floor(W / 90))).tickSize(-(H - m.t - m.b))).call(axisStyle);
+  svg.append("g").attr("transform", `translate(${m.l - 4},0)`).call(d3.axisLeft(y).tickSize(0)).call(axisStyle);
+  const tip = laTip(box);
+  const bh = Math.min(28, y.bandwidth());
+  svg.append("g").selectAll("rect").data(rows).join("rect")
+    .attr("class", animated ? "" : "la-anim")
+    .attr("x", x(0)).attr("y", (r) => y(r.topic) + (y.bandwidth() - bh) / 2).attr("height", bh)
+    .attr("width", (r) => x(r.score) - x(0)).attr("rx", 4)
+    .attr("fill", (r) => (r.score < TARGET ? "var(--cds-chart-status-critical)" : dash.colors[0]))
+    .on("mousemove", (ev, r) => tip.show(ev, r.topic, [[null, "Average score", fmt1(r.score)], [null, r.score < TARGET ? "Below" : "Meets", "target of 70"]]))
+    .on("mouseleave", () => tip.hide());
+  svg.append("g").selectAll("text").data(rows).join("text")
+    .attr("x", (r) => x(r.score) + 6).attr("y", (r) => y(r.topic) + y.bandwidth() / 2).attr("dy", "0.35em")
+    .attr("fill", "var(--color-fg)").style("font-size", "var(--cds-font-size-caption)").style("font-variant-numeric", "tabular-nums")
+    .text((r) => fmt1(r.score));
+  svg.append("line").attr("x1", x(TARGET)).attr("x2", x(TARGET)).attr("y1", m.t - 6).attr("y2", H - m.b).attr("stroke", "var(--cds-chart-reference)").attr("stroke-dasharray", "4 3").attr("stroke-width", 1.5);
+  svg.append("text").attr("x", x(TARGET)).attr("y", m.t - 9).attr("text-anchor", "middle").attr("fill", "var(--color-fg-muted)").style("font-size", "var(--cds-font-size-caption)").text("Target 70");
+}
+
+function drawBands() {
+  const box = document.getElementById("ch-band");
+  const d = dash.data("bands");
+  box.querySelectorAll("svg,.la-fail").forEach((n) => n.remove());
+  if (d.status === "error" || d.status === "connect") { laPlain(box); laFail(box); return; }
+  if (d.status !== "ok") return;
+  laPlain(box);
+  const rows = d.data;
+  const W = box.clientWidth || 360, H = 240, m = { t: 24, r: 12, b: 44, l: 34 };
+  const x = d3.scaleBand(rows.map((r) => r.band), [m.l, W - m.r]).padding(0.45);
+  const y = d3.scaleLinear([0, Math.ceil(d3.max(rows, (r) => r.gain) / 5) * 5], [H - m.b, m.t]);
+  const svg = d3.select(box).append("svg").attr("width", "100%").attr("viewBox", `0 0 ${W} ${H}`).attr("height", H);
+  svg.append("g").attr("transform", `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(4).tickSize(-(W - m.l - m.r))).call(axisStyle);
+  svg.append("g").attr("transform", `translate(0,${H - m.b})`).call(d3.axisBottom(x).tickSize(0).tickPadding(8)).call(axisStyle);
+  const tip = laTip(box);
+  const bw = Math.min(64, x.bandwidth());
+  svg.append("g").selectAll("rect").data(rows).join("rect")
+    .attr("class", animated ? "" : "la-anim")
+    .attr("x", (r) => x(r.band) + (x.bandwidth() - bw) / 2).attr("width", bw)
+    .attr("y", (r) => y(r.gain)).attr("height", (r) => y(0) - y(r.gain)).attr("rx", 4)
+    .attr("fill", (r, i) => (i === rows.length - 1 ? dash.colors[0] : "var(--cds-chart-muted)"))
+    .on("mousemove", (ev, r) => tip.show(ev, "Completion " + r.band, [[null, "Average gain", "+" + fmt1(r.gain)], [null, "Students", String(r.students)]]))
+    .on("mouseleave", () => tip.hide());
+  svg.append("g").selectAll("text").data(rows).join("text")
+    .attr("x", (r) => x(r.band) + x.bandwidth() / 2).attr("y", (r) => y(r.gain) - 6).attr("text-anchor", "middle")
+    .attr("fill", "var(--color-fg)").style("font-size", "var(--cds-font-size-caption)").style("font-variant-numeric", "tabular-nums")
+    .text((r) => "+" + fmt1(r.gain));
+  svg.append("g").selectAll("text").data(rows).join("text")
+    .attr("x", (r) => x(r.band) + x.bandwidth() / 2).attr("y", H - m.b + 30).attr("text-anchor", "middle")
+    .attr("fill", "var(--color-fg-muted)").style("font-size", "var(--cds-font-size-caption)")
+    .text((r) => r.students + " students");
+}
+
+function drawTable() {
+  const tb = document.querySelector("#tbl tbody");
+  const d = dash.data("atRisk");
+  tb.textContent = "";
+  if (d.status !== "ok") return;
+  d.data.forEach((r) => {
+    const tr = document.createElement("tr");
+    [["student", ""], ["class", ""], ["pre", "n hide-narrow"], ["post", "n low"], ["completion", "n hide-narrow"], ["weakest", ""]].forEach(([k, cls]) => {
+      const td = document.createElement("td");
+      if (cls) td.className = cls;
+      td.textContent = String(r[k]);
+      tr.appendChild(td);
+    });
+    tb.appendChild(tr);
+  });
+}
+
+dash.onData(() => {
+  fillMarks();
+  drawClass();
+  drawTopic();
+  drawBands();
+  drawTable();
+  if (dash.data("byClass").status === "ok") animated = true;
+});
+</script>
+
+</div>
+<script>dash._run();</script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reem Eyada | Portfolio</title>
+<meta name="description" content="Portfolio of Reem Eyada: e-learning developer, mathematics teacher and data analyst.">
+<meta name="author" content="Reem Eyada">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+:root { --paper:#f3f6fa; --grid:#dde5ef; --surface:#fff; --ink:#1b2a41; --muted:#5b6b82; --line:#cfd9e6; --accent:#2756c5;
+  --f-display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif; --f-body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif; }
+@media (prefers-color-scheme: dark) { :root { --paper:#111824; --grid:#1a2433; --surface:#172131; --ink:#e6edf7; --muted:#9aabc2; --line:#2a3a52; --accent:#7aa2ff; color-scheme:dark; } }
+* { box-sizing:border-box; }
+html,body { margin:0; }
+body { background-color:var(--paper); background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px); background-size:24px 24px; color:var(--ink); font-family:var(--f-body); font-size:17px; line-height:1.6; }
+.wrap { max-width:860px; margin:0 auto; padding:56px max(16px,env(safe-area-inset-right,0px)) 64px max(16px,env(safe-area-inset-left,0px)); display:grid; gap:32px; }
+h1,h2 { font-family:var(--f-display); margin:0; line-height:1.15; text-wrap:balance; }
+h1 { font-size:clamp(2.2rem,6vw,3.2rem); font-weight:800; letter-spacing:-0.02em; }
+.role { color:var(--muted); font-size:1.1rem; margin:6px 0 0; }
+p { margin:0; max-width:65ch; }
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr)); gap:16px; }
+a.card { display:grid; gap:8px; align-content:start; background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:22px; color:inherit; text-decoration:none; transition:border-color .2s; }
+a.card:hover, a.card:focus-visible { border-color:var(--accent); outline:none; }
+.tag { font-size:.75rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); font-weight:700; }
+.card h2 { font-size:1.25rem; }
+.card p { color:var(--muted); font-size:.95rem; }
+.go { color:var(--accent); font-weight:700; font-size:.95rem; }
+footer { color:var(--muted); font-size:.9rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Reem Eyada</h1>
+    <p class="role">E-learning Developer · Mathematics Teacher · Data Analyst</p>
+  </header>
+  <p>I design learning experiences that are clear, engaging and measurable. These sample projects show how I take one topic from classroom insight, to an interactive module, to data that shows whether it worked.</p>
+  <div class="grid">
+    <a class="card" href="balancing-act/">
+      <span class="tag">E-learning development</span>
+      <h2>The Balancing Act</h2>
+      <p>An interactive math module on two-step equations, with a balance-scale explorer, practice and a knowledge check.</p>
+      <span class="go">Open the module →</span>
+    </a>
+    <a class="card" href="learning-analytics/">
+      <span class="tag">Data analysis</span>
+      <h2>Math Learning Analytics</h2>
+      <p>A dashboard measuring the module's impact on 120 students, with weak topics and students who need support.</p>
+      <span class="go">Open the dashboard →</span>
+    </a>
+    <a class="card" href="case-study.pdf">
+      <span class="tag">Instructional design</span>
+      <h2>Case Study</h2>
+      <p>The challenge, design decisions, development and results behind the project.</p>
+      <span class="go">Read the case study →</span>
+    </a>
+  </div>
+  <footer>Sample projects use synthetic data. No real student data is shown.</footer>
+</div>
+</body>
+</html>
