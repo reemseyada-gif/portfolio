@@ -20,7 +20,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%231B2422'/%3E%3Cpath d='M12 48V16h11c7 0 9 4 9 8s-3 8-9 8h-11M22 32l11 16M38 48V16l8 16 8-16v32' fill='none' stroke='%23F1EFE6' stroke-width='4.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400;0,600;1,400;1,500&family=Hanken+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Noto+Naskh+Arabic:wght@400;600&family=IBM+Plex+Sans+Arabic:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <script>
 /* choose language and theme before first paint: saved choice, then ?lang=, then the browser's language */
 (function(){var d=document.documentElement,l=null;
@@ -42,15 +42,15 @@ try{var t=localStorage.getItem('theme');if(t)d.dataset.theme=t;}catch(e){}})();
   --accent:#2C5B8C;
   --mark:#F0D45A;
   --shadow:rgba(27,36,34,.14);
-  --f-display:"STIX Two Text","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  --f-display:"IBM Plex Sans","IBM Plex Sans Arabic","Segoe UI",system-ui,sans-serif;
   --f-serif:var(--f-display);
-  --f-sans:"Hanken Grotesk","Segoe UI",system-ui,sans-serif;
-  --f-mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --f-sans:var(--f-display);
+  --f-mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
   color-scheme:light;
 }
 :root:lang(ar){
-  --f-serif:"Noto Naskh Arabic","STIX Two Text",serif;
-  --f-sans:"IBM Plex Sans Arabic","Hanken Grotesk",system-ui,sans-serif;
+  --f-serif:"IBM Plex Sans Arabic","IBM Plex Sans",system-ui,sans-serif;
+  --f-sans:"IBM Plex Sans Arabic","IBM Plex Sans",system-ui,sans-serif;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#121715;--surface:#18201D;--ink:#E9ECE5;--soft:#C3CAC3;--muted:#8E9A94;--rule:#2A3430;--accent:#8DB4E2;--mark:#C9AE3E;--shadow:rgba(0,0,0,.5);color-scheme:dark}}
@@ -176,6 +176,8 @@ nav.links a:hover{color:var(--ink)}nav.links a:hover::after{inset-inline-end:0}
 .contact > .wrap > p{color:var(--soft);max-width:52ch;margin:18px 0 0}
 .mail{display:inline-block;margin-top:30px;font-family:var(--f-display);font-size:clamp(24px,4vw,44px);text-decoration:none;border-bottom:1.5px solid var(--rule);padding-bottom:4px;transition:border-color .2s;word-break:break-all}
 .mail:hover{border-color:var(--ink)}
+.reach{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+.mail.phone{margin-top:10px;font-size:clamp(20px,3vw,32px)}
 .toast{font-size:14px;color:var(--accent);margin:12px 0 0}
 
 /* footer */
@@ -216,6 +218,58 @@ dialog.win[open]{display:grid;grid-template-rows:auto 1fr;animation:pop .32s cub
 .play{display:none;margin-top:22px;width:100%;justify-content:center;font-size:17px;padding:15px 22px}
 @media (max-width:700px){.play{display:flex}}
 
+
+/* professional type: IBM Plex */
+.hero h1{font-weight:600;letter-spacing:-.045em;line-height:.95}
+.hero h1 em{font-style:normal;font-weight:300;color:var(--soft)}
+.statement{font-weight:300;font-family:var(--f-sans)}
+:lang(ar) .statement{font-weight:400}
+.sec-top h2,.info h3,.contact h2,.wtext h3{font-weight:500;letter-spacing:-.025em}
+.about blockquote{font-weight:400;letter-spacing:-.01em}
+:lang(ar) .sec-top h2,:lang(ar) .info h3,:lang(ar) .contact h2,:lang(ar) .wtext h3,:lang(ar) .about blockquote{letter-spacing:0}
+.alt{font-family:var(--f-sans);font-weight:400}
+.label{font-family:var(--f-mono)}
+.mail{font-family:var(--f-mono);font-weight:400}
+.idx{display:inline-block;font:400 .38em var(--f-mono);color:var(--accent);vertical-align:.9em;margin-inline-end:.5em;letter-spacing:0}
+.idx-s{color:var(--accent);direction:ltr;unicode-bidi:isolate}
+.idx{direction:ltr;unicode-bidi:isolate}
+
+/* hero plot */
+.hero{background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:32px 32px;background-position:-1px -1px}
+:root{--grid:rgba(27,36,34,.045)}
+:root[data-theme="dark"]{--grid:rgba(233,236,229,.05)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--grid:rgba(233,236,229,.05)}}
+.hero .wrap{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);align-items:center}
+.plot{margin:0;position:relative;cursor:crosshair}
+.plot svg{width:100%;height:auto;display:block;overflow:visible;direction:ltr}
+.plot .grid line{stroke:var(--rule);stroke-width:1}
+.plot .axis{fill:none;stroke:var(--ink);stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.plot .curve{fill:none;stroke:var(--accent);stroke-width:3;stroke-linecap:round;stroke-dasharray:var(--len);stroke-dashoffset:var(--len);animation:draw 1.8s .3s cubic-bezier(.5,0,.2,1) forwards}
+.plot .area{fill:var(--mark);opacity:0;animation:fadeA .8s 1.6s forwards}
+@keyframes fadeA{to{opacity:.28}}
+.plot .dots circle{fill:var(--surface);stroke:var(--accent);stroke-width:2;opacity:0;animation:pop2 .35s forwards}
+@keyframes pop2{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
+.plot .dots circle{transform-box:fill-box;transform-origin:center}
+.plot text{font-family:var(--f-mono);fill:var(--muted);font-size:13px}
+:lang(ar) .plot text.ax{font-family:var(--f-sans);font-size:14px}
+.plot .fx{fill:var(--ink);font-size:16px;opacity:0;animation:fadeA2 .6s 2s forwards}
+@keyframes fadeA2{to{opacity:1}}
+.plot .tick{font-size:11px}
+.plot .cross{stroke:var(--ink);stroke-dasharray:3 4;opacity:0;transition:opacity .2s}
+.plot .probe{fill:var(--accent);stroke:var(--surface);stroke-width:3;opacity:0;transition:opacity .2s}
+.plot .read{fill:var(--ink);font-size:13px;opacity:0;transition:opacity .2s}
+.plot.on .cross{opacity:.5}.plot.on .probe,.plot.on .read{opacity:1}
+@media (max-width:900px){.hero .wrap{grid-template-columns:1fr}.plot{max-width:520px}}
+
+/* facts strip */
+.facts{border-block:1px solid var(--rule);background:var(--surface)}
+.facts .wrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.fact{padding:26px 22px;border-inline-start:1px solid var(--rule);display:grid;gap:4px}
+.fact:first-child{border-inline-start:0;padding-inline-start:0}
+.fact .num{font:500 clamp(36px,4.4vw,54px)/1 var(--f-mono);letter-spacing:-.03em;color:var(--ink)}
+.fact span{color:var(--muted);font-size:14.5px}
+@media (max-width:700px){.facts .wrap{grid-template-columns:1fr 1fr}.fact{padding:20px 14px;border-top:1px solid var(--rule)}.fact:nth-child(-n+2){border-top:0}.fact:nth-child(odd){border-inline-start:0;padding-inline-start:0}}
+
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition:none !important}
   .hl{background-size:100% 100%}.sign path{stroke-dashoffset:0}
@@ -250,19 +304,39 @@ dialog.win[open]{display:grid;grid-template-rows:auto 1fr;animation:pop .32s cub
         <button class="btn line" type="button" data-open="numbers" data-k="playGame">Play a game</button>
       </div>
     </div>
-    <aside class="aside" aria-label="At a glance">
-      <div><span class="label" data-k="focusL">Focus</span><b data-k="focus">Primary mathematics</b></div>
-      <div><span class="label" data-k="makesL">Makes</span><b data-k="makes">Games, e-learning, dashboards</b></div>
-      <div><span class="label" data-k="langsL">Languages</span><b data-k="langs">Arabic &amp; English</b></div>
-      <div id="statBox" hidden><span class="label" data-k="statL">Children who have played</span><b class="big" id="statN"></b></div>
-    </aside>
+    <figure class="plot" id="plot" aria-hidden="true">
+      <svg viewBox="0 0 480 360">
+        <g class="grid"></g>
+        <path class="axis" d="M50 310H462M50 310V28"/>
+        <path class="axis" d="M456 305l6 5-6 5M45 34l5-6 5 6"/>
+        <path class="area" d=""/>
+        <path class="curve" d=""/>
+        <g class="dots"></g>
+        <line class="cross" x1="0" x2="0" y1="40" y2="310"/>
+        <circle class="probe" r="6" cx="-20" cy="-20"/>
+        <text class="ax" x="462" y="334" text-anchor="end" data-k="axX">practice →</text>
+        <text class="ax" x="58" y="24" data-k="axY">↑ understanding</text>
+        <text class="fx" x="282" y="276">y = 1 / (1 + e<tspan dy="-7" font-size="11">−x</tspan><tspan dy="7">)</tspan></text>
+        <text class="read" x="462" y="24" text-anchor="end"></text>
+      </svg>
+    </figure>
+  </div>
+</section>
+
+<section class="facts" aria-label="At a glance">
+  <div class="wrap">
+    <div class="fact"><b class="num" data-to="2">0</b><span data-k="f1">Learning games</span></div>
+    <div class="fact"><b class="num" data-to="6">0</b><span data-k="f2">Interactive activities</span></div>
+    <div class="fact"><b class="num" data-to="120">0</b><span data-k="f3">Students in the analytics sample</span></div>
+    <div class="fact"><b class="num" data-to="2">0</b><span data-k="f4">Languages, Arabic and English</span></div>
+    <div class="fact" id="statBox" hidden><b class="num" id="statN"></b><span data-k="statL">Children who have played</span></div>
   </div>
 </section>
 
 <section class="sec" id="work">
   <div class="wrap">
     <div class="sec-top">
-      <h2 data-k="workH">Selected work</h2>
+      <h2><span class="idx">§1</span><span data-k="workH">Selected work</span></h2>
       <p data-k="workP">Each piece runs live. Open one to try it right here.</p>
     </div>
     <div class="work">
@@ -341,12 +415,14 @@ dialog.win[open]{display:grid;grid-template-rows:auto 1fr;animation:pop .32s cub
 
 <section class="sec ruled contact" id="contact">
   <div class="wrap">
-    <span class="label" data-k="cL">Contact</span>
+    <span class="label"><span class="idx-s">§2</span> <span data-k="cL">Contact</span></span>
     <h2 data-k="cH">We don’t just simplify mathematics… we give it an impact you can measure and a passion no one forgets.</h2>
     <p data-k="cP">For collaboration with schools, teachers and education teams:</p>
-    <a class="mail ltr" href="mailto:reemseyada@gmail.com" id="mailLink">reemseyada@gmail.com</a>
+    <div class="reach"><a class="mail ltr" href="mailto:reemseyada@gmail.com" id="mailLink">reemseyada@gmail.com</a>
+    <a class="mail phone ltr" href="tel:+972595170411">+972 59 517 0411</a></div>
     <div class="links-row">
       <a class="btn" href="mailto:reemseyada@gmail.com"><span data-k="cSend">Send an email</span> <span class="arr">→</span></a>
+      <a class="btn line" href="https://wa.me/972595170411" target="_blank" rel="noopener" data-k="cWa">WhatsApp</a>
       <button class="btn line" type="button" id="copyMail" data-k="cCopy">Copy address</button>
       <!-- CV: add cv.pdf to the site, then un-comment this link
       <a class="btn line" href="cv.pdf" target="_blank" rel="noopener" data-k="cCv">Download CV</a> -->
@@ -388,7 +464,7 @@ const AR={
   statement:'أحوّل دروس الرياضيات إلى أشياء يستطيع الأطفال <span class="hl">لمسها واللعب بها وإتقانها</span>، ثم أقيس ما تعلّموه.',
   seeWork:'شاهد الأعمال',playGame:'جرّب لعبة',
   focusL:'التخصّص',focus:'رياضيات المرحلة الابتدائية',makesL:'أصمّم',makes:'ألعابًا، ودروسًا إلكترونية، ولوحات بيانات',langsL:'اللغات',langs:'العربية والإنجليزية',
-  statL:'عدد الأطفال الذين لعبوا',
+  statL:'طفلًا لعبوا ألعابي',f1:'ألعاب تعليمية',f2:'أنشطة تفاعلية',f3:'طالبًا في عيّنة التحليل',f4:'لغتان: العربية والإنجليزية',axX:'التدريب ←',axY:'↑ الفهم',
   workH:'أعمال مختارة',workP:'كل عمل هنا يعمل مباشرة، افتح أيًّا منها وجرّبه في هذه الصفحة.',
   openTag:'افتح ↗',
   g1L:'لعبة تعليمية · الصف الأول',g1T:'أعدادي الأولى<span class="alt" lang="en">My First Numbers</span>',
@@ -414,7 +490,7 @@ const AR={
   ab2:'كل لعبة في هذه الصفحة مجانية، لكل معلّم ولكل عائلة.',
   cL:'تواصل',cH:'نحن لا نُبسّط الرياضيات فحسب… بل نبتكر لها أثراً يُقاس وشغفاً لا يُنسى.',
   cP:'للتعاون مع المدارس والمعلّمين وفرق التعليم:',
-  cSend:'أرسل رسالة',cCopy:'انسخ العنوان',cCv:'حمّل السيرة الذاتية',copied:'تمّ النسخ.',
+  cSend:'أرسل رسالة',cWa:'واتساب',cCopy:'انسخ العنوان',cCv:'حمّل السيرة الذاتية',copied:'تمّ النسخ.',
   foot:'© ٢٠٢٦ Reem Eyada',
   wCopy:'انسخ الرابط',wNew:'صفحة جديدة ↗'
 };
@@ -469,6 +545,39 @@ function fit(f){const box=f.parentElement.getBoundingClientRect();if(!box.width)
 const io='IntersectionObserver' in window?new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){const f=e.target;if(!f.src)f.src=f.dataset.src;fit(f);io.unobserve(f);}});},{rootMargin:'300px'}):null;
 frames.forEach(f=>{if(io)io.observe(f);else{f.src=f.dataset.src;fit(f);}});
 addEventListener('resize',()=>frames.forEach(fit));
+
+/* hero plot: a learning curve you can trace */
+(function(){
+  const fig=document.getElementById('plot');if(!fig)return;const svg=fig.querySelector('svg');
+  const X=x=>50+(x+6)*(400/12),Y=y=>310-y*260,f=x=>1/(1+Math.exp(-x));
+  const NS='http://www.w3.org/2000/svg';let g='';
+  for(let gx=90;gx<=450;gx+=40)g+='<line x1="'+gx+'" x2="'+gx+'" y1="40" y2="310"/>';
+  for(let gy=270;gy>=50;gy-=40)g+='<line x1="50" x2="450" y1="'+gy+'" y2="'+gy+'"/>';
+  svg.querySelector('.grid').innerHTML=g;
+  let d='';for(let i=0;i<=120;i++){const x=-6+i/10;d+=(i?'L':'M')+X(x).toFixed(1)+' '+Y(f(x)).toFixed(1);}
+  const c=svg.querySelector('.curve');c.setAttribute('d',d);
+  svg.querySelector('.area').setAttribute('d',d+'L450 310L50 310Z');
+  c.style.setProperty('--len',Math.ceil(c.getTotalLength()));
+  let dots='';[-4,-2,0,2,4].forEach((x,i)=>{dots+='<circle r="5" cx="'+X(x).toFixed(1)+'" cy="'+Y(f(x)).toFixed(1)+'" style="animation-delay:'+(0.7+i*0.25)+'s"/>';});
+  svg.querySelector('.dots').innerHTML=dots;
+  const cross=svg.querySelector('.cross'),probe=svg.querySelector('.probe'),read=svg.querySelector('.read');
+  function move(e){const r=svg.getBoundingClientRect(),vx=(e.clientX-r.left)*480/r.width;const x=Math.max(-6,Math.min(6,(vx-50)/(400/12)-6));const px=X(x),py=Y(f(x));
+    cross.setAttribute('x1',px);cross.setAttribute('x2',px);probe.setAttribute('cx',px);probe.setAttribute('cy',py);
+    read.textContent='x = '+x.toFixed(1)+'   y = '+f(x).toFixed(2);fig.classList.add('on');}
+  fig.addEventListener('pointermove',move);fig.addEventListener('pointerdown',move);
+  fig.addEventListener('pointerleave',()=>fig.classList.remove('on'));
+})();
+
+/* numbers count up when they appear */
+(function(){
+  const nums=[...document.querySelectorAll('.num[data-to]')];
+  const run=el=>{const to=+el.dataset.to,t0=performance.now(),dur=1100;
+    (function step(t){const k=Math.min(1,(t-t0)/dur),v=Math.round(to*(1-Math.pow(1-k,3)));el.textContent=fmt(v);if(k<1)requestAnimationFrame(step);})(t0);};
+  if(!('IntersectionObserver' in window)||matchMedia('(prefers-reduced-motion: reduce)').matches){nums.forEach(n=>n.textContent=fmt(n.dataset.to));return;}
+  const o=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){run(e.target);o.unobserve(e.target);}}),{threshold:.6});
+  nums.forEach(n=>o.observe(n));
+  langBtn.addEventListener('click',()=>nums.forEach(n=>{if(n.textContent!=='0')n.textContent=fmt(n.dataset.to);}));
+})();
 
 /* windows */
 const win=document.getElementById('win'),wText=document.getElementById('wText'),wView=document.getElementById('wView');
