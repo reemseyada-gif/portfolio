@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="لعبة تعليمية تفاعلية للصف الأول: الأعداد ١ و٢ و٣. إعداد أ. ريم">
 <meta property="og:title" content="أعدادي الأولى ١ ٢ ٣">
-<meta property="og:description" content="ثلاث ألعاب تفاعلية للصف الأول: عُدّ وفرقع، البطاقات الثلاثية، السلة والقلم. إعداد أ. ريم">
+<meta property="og:description" content="ثلاث ألعاب تفاعلية للصف الأول: عُدّ وفرقع، البطاقات القلّابة، السلة والقلم. إعداد أ. ريم">
 <meta property="og:type" content="website">
 <meta name="author" content="أ. ريم">
 <title>أعدادي الأولى</title>
@@ -149,7 +149,7 @@ p{margin:0}
 @keyframes shake{20%,60%{transform:translateX(-10px)}40%,80%{transform:translateX(10px)}}
 
 /* triple flip cards */
-.memo{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;max-width:520px;margin:0 auto}
+.memo{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;max-width:540px;margin:0 auto}
 .fcard{perspective:900px;border:0;background:none;padding:0;cursor:pointer;aspect-ratio:1;max-width:100%}
 .fcard .in{position:relative;display:block;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
 .fcard.open .in,.fcard.done .in{transform:rotateY(180deg)}
@@ -303,7 +303,7 @@ p{margin:0}
       </button>
       <button class="game-card" data-go="g2" type="button">
         <span class="art" style="background:#FBF2D9"><svg viewBox="0 0 170 120" aria-hidden="true"><g font-family="Baloo Bhaijaan 2, sans-serif" font-weight="800" text-anchor="middle" fill="#2A3F4A"><rect x="10" y="22" width="46" height="62" rx="10" fill="#EAF6EF" stroke="#A6D8BD" stroke-width="3"/><text x="33" y="66" font-size="34">٢</text><rect x="62" y="22" width="46" height="62" rx="10" fill="#F1EDFB" stroke="#C9BCEB" stroke-width="3"/><text x="85" y="60" font-size="15">اثنان</text><rect x="114" y="22" width="46" height="62" rx="10" fill="#FDEEE8" stroke="#F4A893" stroke-width="3"/><circle cx="128" cy="53" r="8" fill="#F08A7A"/><circle cx="146" cy="53" r="8" fill="#F08A7A"/></g></svg></span>
-        <h3>البطاقات الثلاثية</h3><span class="tag">اجمع العدد وكلمته وصورته</span><span class="stars" data-stars="g2"></span>
+        <h3>البطاقات القلّابة</h3><span class="tag">طابق الرقم مع صورته ومع كلمته</span><span class="stars" data-stars="g2"></span>
       </button>
       <button class="game-card" data-go="g3" type="button">
         <span class="art" style="background:#E8F4EC"><svg viewBox="0 0 170 120" aria-hidden="true"><rect x="12" y="14" width="76" height="92" rx="12" fill="#2F5D50" stroke="#8B6A4E" stroke-width="5"/><text x="50" y="84" text-anchor="middle" font-family="Baloo Bhaijaan 2, sans-serif" font-weight="800" font-size="56" fill="#F8E09A">٣</text><path d="M104 96 h52 l-6 18 h-40Z" fill="#E7B66A"/><path d="M100 96 h60" stroke="#B88A1C" stroke-width="4"/><circle cx="118" cy="88" r="9" fill="#F08A7A"/><circle cx="138" cy="86" r="9" fill="#F08A7A"/><circle cx="128" cy="76" r="9" fill="#F08A7A"/></svg></span>
@@ -320,8 +320,8 @@ p{margin:0}
   </section>
 
   <section id="sc-g2" class="panel" hidden>
-    <div class="topbar"><button class="back" type="button" data-back>→ القائمة</button><h2>البطاقات الثلاثية</h2><div class="progress"><span id="g2-count"></span><span class="bar"><i id="g2-bar"></i></span></div></div>
-    <p class="hint">اقلب البطاقات واجمع ثلاث بطاقات متشابهة: الرقم، والكلمة، والصورة.</p>
+    <div class="topbar"><button class="back" type="button" data-back>→ القائمة</button><h2>البطاقات القلّابة</h2><div class="progress"><span id="g2-count"></span><span class="bar"><i id="g2-bar"></i></span></div></div>
+    <p class="hint" id="g2-hint"></p>
     <div class="found" id="g2-found"><span>١</span><span>٢</span><span>٣</span></div>
     <div class="memo" id="g2-grid"></div>
   </section>
@@ -473,7 +473,7 @@ function stopAll(){$('#g1-sky').innerHTML='';try{speechSynthesis.cancel();}catch
 
 /* ---------- results (optional Google Sheets) ---------- */
 const RESULTS_URL='';
-const GAME_NAMES={g1:'عد وفرقع (١-٣)',g2:'البطاقات الثلاثية (١-٣)',g3:'السلة والقلم (١-٣)'};
+const GAME_NAMES={g1:'عد وفرقع (١-٣)',g2:'البطاقات القلابة (١-٣)',g3:'السلة والقلم (١-٣)'};
 function sendResult(g,stars,miss){
   if(!RESULTS_URL)return;
   try{fetch(RESULTS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({name:S.name,game:GAME_NAMES[g],stars:stars,mistakes:miss})}).catch(()=>{});}catch(e){}
@@ -526,42 +526,49 @@ function pickG1(b,v){
   }
 }
 
-/* ================= GAME 2: triple flip cards ================= */
-const G2={open:[],found:0,miss:0,lock:false};
+/* ================= GAME 2: flip-card pairs (2 easy levels) ================= */
+const G2={level:0,open:[],matched:0,miss:0,lock:false,kind:'apple'};
+const G2L=[{k:'p',hint:'المرحلة الأولى: طابق كل رقم مع الصورة التي فيها العدد نفسه.'},{k:'w',hint:'المرحلة الثانية: طابق كل رقم مع كلمته.'}];
 function startG2(){
-  const kind=shuffle(['apple','chick','fish','flower'])[0];
-  const cards=[];[1,2,3].forEach(v=>{cards.push({v,k:'n'});cards.push({v,k:'w'});cards.push({v,k:'p'});});
-  Object.assign(G2,{open:[],found:0,miss:0,lock:false});
+  Object.assign(G2,{level:0,miss:0});G2.kind=shuffle(['apple','chick','fish','flower'])[0];
+  show('g2');buildG2();
+}
+function buildG2(){
+  Object.assign(G2,{open:[],matched:0,lock:true});
+  const L=G2L[G2.level];$('#g2-hint').textContent=L.hint;
   document.querySelectorAll('#g2-found span').forEach(s=>s.classList.remove('on'));
+  const cards=[];[1,2,3].forEach(v=>{cards.push({v,k:'n'});cards.push({v,k:L.k});});
   const grid=$('#g2-grid');grid.innerHTML='';
   shuffle(cards).forEach(c=>{
-    const b=document.createElement('button');b.type='button';b.className='fcard';b.setAttribute('aria-label','بطاقة مقلوبة');
-    const front=c.k==='n'?'<span class="val">'+AR[c.v]+'</span>':c.k==='w'?'<span class="wd">'+WORD[c.v]+'</span>':'<span class="pics">'+Array.from({length:c.v},()=>PIC[kind]).join('')+'</span>';
+    const b=document.createElement('button');b.type='button';b.className='fcard open';
+    const front=c.k==='n'?'<span class="val">'+AR[c.v]+'</span>':c.k==='w'?'<span class="wd">'+WORD[c.v]+'</span>':'<span class="pics">'+Array.from({length:c.v},()=>PIC[G2.kind]).join('')+'</span>';
     b.innerHTML='<span class="in"><span class="face back"><svg viewBox="0 0 60 60" aria-hidden="true"><circle cx="30" cy="30" r="26" fill="#FFFFFF" opacity=".75"/><text x="30" y="42" text-anchor="middle" font-size="34" font-weight="800" fill="#B88A1C" font-family="Baloo Bhaijaan 2, sans-serif">؟</text></svg></span><span class="face front '+c.k+'">'+front+'</span></span>';
-    b._c=c;b.addEventListener('click',()=>flipG2(b));grid.appendChild(b);
+    b._c=c;b.setAttribute('aria-label',c.k==='n'?AR[c.v]:c.k==='w'?WORD[c.v]:AR[c.v]+' صور');
+    b.addEventListener('click',()=>flipG2(b));grid.appendChild(b);
   });
-  updG2();show('g2');say('ابحث يا '+nm()+' عن ثلاث بطاقات للعدد نفسه.',3800);
+  updG2();
+  say((G2.level?'أحسنت يا '+nm()+'! ':'')+'انظر جيداً إلى البطاقات، ستنقلب بعد قليل.',3000);
+  setTimeout(()=>{document.querySelectorAll('#g2-grid .fcard').forEach(b=>{b.classList.remove('open');b.setAttribute('aria-label','بطاقة مقلوبة');});G2.lock=false;},3500);
 }
-function updG2(){$('#g2-count').textContent='المجموعات: '+ar(G2.found)+' من '+ar(3);$('#g2-bar').style.width=(G2.found/3*100)+'%';}
+function updG2(){$('#g2-count').textContent='المرحلة '+ar(G2.level+1)+' من '+ar(2)+' · الأزواج '+ar(G2.matched)+' من '+ar(3);$('#g2-bar').style.width=((G2.level*3+G2.matched)/6*100)+'%';}
 function flipG2(b){
   if(G2.lock||b.classList.contains('open')||b.classList.contains('done'))return;
   sfx.flip();b.classList.add('open');const c=b._c;b.setAttribute('aria-label',c.k==='n'?AR[c.v]:c.k==='w'?WORD[c.v]:AR[c.v]+' صور');
-  G2.open.push(b);
-  const same=G2.open.every(x=>x._c.v===G2.open[0]._c.v);
-  if(!same){
-    G2.miss++;G2.lock=true;const opened=G2.open.slice();
-    setTimeout(()=>{opened.forEach(x=>x.classList.add('bad'));sfx.bad();say(pick(TRY));},450);
-    setTimeout(()=>{opened.forEach(x=>{x.classList.remove('open','bad');x.setAttribute('aria-label','بطاقة مقلوبة');});G2.open=[];G2.lock=false;},1400);
-    return;
-  }
-  if(G2.open.length===3){
-    G2.lock=true;const v=G2.open[0]._c.v,set=G2.open.slice();
-    setTimeout(()=>{set.forEach(x=>{x.classList.remove('open');x.classList.add('done');});
-      G2.found++;updG2();document.querySelectorAll('#g2-found span')[v-1].classList.add('on');
-      sfx.good();confetti(50);say(pick(PRAISE)+' '+AR[v]+' = '+WORD[v],2600);G2.open=[];G2.lock=false;
-      if(G2.found===3)setTimeout(()=>finish('g2',G2.miss<=2?3:G2.miss<=5?2:1,G2.miss),1000);
+  G2.open.push(b);if(G2.open.length<2)return;
+  const [a,d]=G2.open;G2.lock=true;
+  if(a._c.v===d._c.v){
+    setTimeout(()=>{[a,d].forEach(x=>{x.classList.remove('open');x.classList.add('done');});
+      G2.matched++;updG2();document.querySelectorAll('#g2-found span')[a._c.v-1].classList.add('on');
+      sfx.good();confetti(50);say(pick(PRAISE)+' '+AR[a._c.v]+' = '+WORD[a._c.v],2600);G2.open=[];G2.lock=false;
+      if(G2.matched===3){G2.lock=true;
+        if(G2.level===0)setTimeout(()=>{G2.level=1;buildG2();},1600);
+        else setTimeout(()=>finish('g2',G2.miss<=2?3:G2.miss<=5?2:1,G2.miss),1000);}
     },450);
-  }else if(G2.open.length===2){sfx.pop();}
+  }else{
+    G2.miss++;
+    setTimeout(()=>{a.classList.add('bad');d.classList.add('bad');sfx.bad();say(pick(TRY));},450);
+    setTimeout(()=>{[a,d].forEach(x=>{x.classList.remove('open','bad');x.setAttribute('aria-label','بطاقة مقلوبة');});G2.open=[];G2.lock=false;},1400);
+  }
 }
 
 /* ================= GAME 3: basket & pencil ================= */
