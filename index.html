@@ -233,6 +233,7 @@ dialog.win[open]{display:grid;grid-template-rows:auto 1fr;animation:pop .32s cub
 .idx{display:inline-block;font:400 .38em var(--f-mono);color:var(--accent);vertical-align:.9em;margin-inline-end:.5em;letter-spacing:0}
 .idx-s{color:var(--accent);direction:ltr;unicode-bidi:isolate}
 .idx{direction:ltr;unicode-bidi:isolate}
+[dir="rtl"] .idx{margin-right:0;margin-left:.5em}
 
 /* hero plot */
 .hero{background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:32px 32px;background-position:-1px -1px}
@@ -469,20 +470,20 @@ const AR={
   openTag:'افتح ↗',
   g1L:'لعبة تعليمية · الصف الأول',g1T:'أعدادي الأولى<span class="alt" lang="en">My First Numbers</span>',
   g1P:'يعدّ الأطفال صورًا حقيقية، ويطابقون كل رقم مع اسمه، ثم يكتبونه بأصابعهم بينما يُريهم القلم ترتيب الكتابة.',
-  covers:'المحتوى',acts:'الأنشطة',g1C:'مفهوم الأعداد ١ و٢ و٣',g1A:'بالونات، بطاقات قلّابة، سلّة، كتابة الرقم',
+  covers:'المحتوى',acts:'الأنشطة',g1C:'مفهوم الأعداد 1 و2 و3',g1A:'بالونات، بطاقات قلّابة، سلّة، كتابة الرقم',
   tryIt:'جرّبها',
   g3L:'لعبة تعليمية · الصف الثالث',g3T:'رحلة الآلاف<span class="alt" lang="en">The Thousands Journey</span>',
-  g3P:'قراءة الأعداد حتى ٩٩٩٩ وكتابتها وتمثيلها، مع توليد اسم كل عدد تلقائيًا فلا تتكرّر جولتان.',
-  g3C:'قيمة الألف، والأعداد حتى ٩٩٩٩',g3A:'بالونات، بطاقات قلّابة، اسحب وأفلت',
+  g3P:'قراءة الأعداد حتى 9999 وكتابتها وتمثيلها، مع توليد اسم كل عدد تلقائيًا فلا تتكرّر جولتان.',
+  g3C:'قيمة الألف، والأعداد حتى 9999',g3A:'بالونات، بطاقات قلّابة، اسحب وأفلت',
   baL:'وحدة تعلّم إلكتروني',baT:'The Balancing Act<span class="alt" lang="ar">لعبة التوازن</span>',
   baP:'المعادلات ذات الخطوتين في صورة ميزان يجب أن يبقى متّزنًا، مع تدريبات متدرّجة واختبار قصير. الوحدة باللغة الإنجليزية.',
   incl:'تتضمّن',baI:'مستكشف الميزان، تدريب، اختبار',role2:'دوري',baR:'التصميم والتطوير',openMod:'افتح الوحدة',
   anL:'تحليلات التعلّم',anT:'Math Learning Analytics<span class="alt" lang="ar">تحليلات تعلّم الرياضيات</span>',
-  anP:'لوحة بيانات تقيس أثر الوحدة على ١٢٠ طالبًا، وتحدّد الموضوعات والطلاب الذين يحتاجون إلى متابعة.',
-  data:'البيانات',anD:'افتراضية، ١٢٠ طالبًا',shows:'تعرض',anS:'الأثر، الموضوعات الصعبة، قائمة الدعم',openDash:'افتح لوحة البيانات',
+  anP:'لوحة بيانات تقيس أثر الوحدة على 120 طالبًا، وتحدّد الموضوعات والطلاب الذين يحتاجون إلى متابعة.',
+  data:'البيانات',anD:'افتراضية، 120 طالبًا',shows:'تعرض',anS:'الأثر، الموضوعات الصعبة، قائمة الدعم',openDash:'افتح لوحة البيانات',
   also:'أيضًا: <a href="case-study.pdf" target="_blank" rel="noopener">دراسة الحالة (PDF) ↗</a> · المشاريع النموذجية تستخدم بيانات افتراضية.',
   methodH:'ما أؤمن به',
-  m1H:'اليد قبل الرمز.',m1P:'على الطفل أن يمسك ثلاثة أشياء قبل أن يكتب ٣. الفهم يبدأ من اليد، لا من الورقة.',
+  m1H:'اليد قبل الرمز.',m1P:'على الطفل أن يمسك ثلاثة أشياء قبل أن يكتب 3. الفهم يبدأ من اليد، لا من الورقة.',
   m2H:'كل لمسة تُعلّم.',m2P:'لا شيء هنا للزينة فقط. اللعبة التي لا تُعلّم لا تدخل الصف.',
   m3H:'الدليل، لا الأمل.',m3P:'لا أخمّن إن نجح الدرس. أقيسه، وأعيد التعليم حيث لم ينجح.',
   quote:'بين دقة الأرقام وسحر الفكرة، أُعيد صياغة تجربة التعلّم لتتحول الرياضيات من معادلات صامتة إلى عوالم تفاعلية تنبض بالحياة.',
@@ -491,22 +492,22 @@ const AR={
   cL:'تواصل',cH:'نحن لا نُبسّط الرياضيات فحسب… بل نبتكر لها أثراً يُقاس وشغفاً لا يُنسى.',
   cP:'للتعاون مع المدارس والمعلّمين وفرق التعليم:',
   cSend:'أرسل رسالة',cWa:'واتساب',cCopy:'انسخ العنوان',cCv:'حمّل السيرة الذاتية',copied:'تمّ النسخ.',
-  foot:'© ٢٠٢٦ Reem Eyada',
+  foot:'© 2026 Reem Eyada',
   wCopy:'انسخ الرابط',wNew:'صفحة جديدة ↗'
 };
 const W={
   numbers:{href:'numbers-1-2-3/',phone:true,tint:'#F2DFD4',
     en:{label:'Learning game · Grade 1',title:'My First Numbers',text:'A first-grade game on the numbers 1, 2 and 3, in Arabic.',list:['Count and pop: count pictures, pop the matching balloon.','Flip cards: match a digit to a picture, then to its word.','Basket and pencil: fill a basket, then trace the digit while a pencil shows the stroke order.']},
-    ar:{label:'لعبة تعليمية · الصف الأول',title:'أعدادي الأولى',text:'لعبة للصف الأول عن الأعداد ١ و٢ و٣.',list:['عُدّ وفرقع: يعدّ الطفل الصور ويفرقع البالون المناسب.','البطاقات القلّابة: يطابق الرقم مع الصورة، ثم مع اسمه.','السلّة والقلم: يملأ السلّة، ثم يكتب الرقم بينما يُريه القلم ترتيب الكتابة.']}},
+    ar:{label:'لعبة تعليمية · الصف الأول',title:'أعدادي الأولى',text:'لعبة للصف الأول عن الأعداد 1 و2 و3.',list:['عُدّ وفرقع: يعدّ الطفل الصور ويفرقع البالون المناسب.','البطاقات القلّابة: يطابق الرقم مع الصورة، ثم مع اسمه.','السلّة والقلم: يملأ السلّة، ثم يكتب الرقم بينما يُريه القلم ترتيب الكتابة.']}},
   thousands:{href:'thousands-game/',phone:true,tint:'#D9E6EE',
     en:{label:'Learning game · Grade 3',title:'The Thousands Journey',text:'A third-grade game on numbers up to 9999, in Arabic.',list:['Balloon pop: read a number in words and pop the right balloon.','Flip cards: pair numbers with their written names.','Drag and write: build numbers from digit tiles and see the value of a thousand.']},
-    ar:{label:'لعبة تعليمية · الصف الثالث',title:'رحلة الآلاف',text:'لعبة للصف الثالث عن الأعداد حتى ٩٩٩٩.',list:['فرقعة البالونات: يقرأ العدد بالكلمات ويفرقع البالون الصحيح.','البطاقات القلّابة: يطابق الأعداد مع أسمائها المكتوبة.','اسحب واكتب: يكوّن الأعداد من بطاقات الأرقام ويرى قيمة الألف.']}},
+    ar:{label:'لعبة تعليمية · الصف الثالث',title:'رحلة الآلاف',text:'لعبة للصف الثالث عن الأعداد حتى 9999.',list:['فرقعة البالونات: يقرأ العدد بالكلمات ويفرقع البالون الصحيح.','البطاقات القلّابة: يطابق الأعداد مع أسمائها المكتوبة.','اسحب واكتب: يكوّن الأعداد من بطاقات الأرقام ويرى قيمة الألف.']}},
   balance:{href:'balancing-act/',phone:false,tint:'#DDE7DF',
     en:{label:'E-learning module',title:'The Balancing Act',text:'An interactive module on two-step equations.',list:['Balance-scale explorer that keeps both sides level.','Graded practice with instant feedback.','A short knowledge check.']},
     ar:{label:'وحدة تعلّم إلكتروني',title:'The Balancing Act',text:'وحدة تفاعلية عن المعادلات ذات الخطوتين، باللغة الإنجليزية.',list:['مستكشف ميزان يُبقي الطرفين متّزنين.','تدريبات متدرّجة مع تغذية راجعة فورية.','اختبار قصير لقياس الفهم.']}},
   analytics:{href:'learning-analytics/',phone:false,tint:'#E4E1EE',
     en:{label:'Learning analytics',title:'Math Learning Analytics',text:'A dashboard measuring the module’s impact on 120 students (synthetic data).',list:['Before and after results.','The hardest topics.','Students who need support.']},
-    ar:{label:'تحليلات التعلّم',title:'Math Learning Analytics',text:'لوحة بيانات تقيس أثر الوحدة على ١٢٠ طالبًا (بيانات افتراضية).',list:['النتائج قبل الوحدة وبعدها.','الموضوعات الأصعب.','الطلاب الذين يحتاجون إلى دعم.']}}
+    ar:{label:'تحليلات التعلّم',title:'Math Learning Analytics',text:'لوحة بيانات تقيس أثر الوحدة على 120 طالبًا (بيانات افتراضية).',list:['النتائج قبل الوحدة وبعدها.','الموضوعات الأصعب.','الطلاب الذين يحتاجون إلى دعم.']}}
 };
 
 /* language */
@@ -531,7 +532,7 @@ const sysDark=()=>matchMedia('(prefers-color-scheme: dark)').matches;
 document.getElementById('themeBtn').addEventListener('click',()=>{const cur=root.dataset.theme||(sysDark()?'dark':'light');const next=cur==='dark'?'light':'dark';root.dataset.theme=next;try{localStorage.setItem('theme',next);}catch(e){}});
 
 /* live numbers and visits (only when STATS_URL is set) */
-const fmt=n=>Number(n).toLocaleString(lang==='ar'?'ar-EG':'en-US');
+const fmt=n=>Number(n).toLocaleString('en-US');
 function showStats(){const box=document.getElementById('statBox');if(!stats||!(stats.children>0)){box.hidden=true;return;}document.getElementById('statN').textContent=fmt(stats.children);box.hidden=false;}
 function track(item){if(!STATS_URL)return;try{fetch(STATS_URL,{method:'POST',mode:'no-cors',keepalive:true,headers:{'Content-Type':'text/plain'},body:JSON.stringify({type:'visit',page:'home',item:item||'',lang})});}catch(e){}}
 if(STATS_URL){
