@@ -193,7 +193,7 @@ dialog.win{border:0;padding:0;width:min(1120px,calc(100vw - 24px));height:min(78
 dialog.win::backdrop{background:rgba(12,16,15,.55);backdrop-filter:blur(3px)}
 dialog.win[open]{display:grid;grid-template-rows:auto 1fr;animation:pop .32s cubic-bezier(.2,.8,.2,1)}
 @keyframes pop{from{opacity:0;transform:translateY(18px) scale(.985)}}
-.wbar{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--rule)}
+.wbar{position:relative;display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--rule)}
 .wbar .url{flex:1;min-width:0;font-family:var(--f-mono);font-size:12.5px;color:var(--muted);background:var(--bg);border-radius:999px;padding:6px 14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;direction:ltr;text-align:left}
 .wbar button,.wbar a{cursor:pointer;border:1px solid var(--rule);background:var(--surface);color:var(--ink);border-radius:999px;height:34px;padding:0 14px;font:500 14px var(--f-sans);text-decoration:none;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
 .wbar .x{width:34px;padding:0;justify-content:center;font-size:18px}
@@ -210,7 +210,10 @@ dialog.win[open]{display:grid;grid-template-rows:auto 1fr;animation:pop .32s cub
 .wview iframe{width:100%;height:100%;border:0;border-radius:22px;background:#fff;display:block}
 .wview .live.wide iframe{border-radius:12px}
 @media (max-width:860px){.wbody{grid-template-columns:minmax(0,1fr);overflow:auto}.wtext{padding:20px;border-inline-end:0;border-bottom:1px solid var(--rule)}.wtext h3{font-size:28px}}
-@media (max-width:560px){dialog.win{width:100vw;height:100dvh;margin:0;border-radius:0}.wbar .url{display:none}.wbar .x{margin-inline-end:auto;order:-1}.wview{padding:14px}.wview .live{height:min(640px,calc(100dvh - 120px))}}
+@media (max-width:700px){dialog.win{width:100vw;height:auto;max-height:86dvh;margin:0;inset:auto 0 0 0;border-radius:20px 20px 0 0;grid-template-rows:auto auto}dialog.win[open]{grid-template-rows:auto auto;animation:sheet .32s cubic-bezier(.2,.8,.2,1)}.wbar{border-bottom:0;padding:10px 14px 0}.wbar::before{content:"";position:absolute;top:8px;left:50%;width:40px;height:4px;margin-left:-20px;border-radius:4px;background:var(--rule)}.wbar .url,.wbar #wOpen{display:none}.wbar .x{margin-inline-start:auto}.wbody{overflow:auto}.wtext{padding:6px 22px calc(26px + env(safe-area-inset-bottom,0px));border-bottom:0}.wview{display:none}}
+@keyframes sheet{from{transform:translateY(100%)}}
+.play{display:none;margin-top:22px;width:100%;justify-content:center;font-size:17px;padding:15px 22px}
+@media (max-width:700px){.play{display:flex}}
 
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition:none !important}
@@ -324,22 +327,22 @@ dialog.win[open]{display:grid;grid-template-rows:auto 1fr;animation:pop .32s cub
 
 <section class="sec ruled" id="method">
   <div class="wrap">
-    <div class="sec-top"><h2 data-k="methodH">How I work</h2></div>
+    <div class="sec-top"><h2 data-k="methodH">What I stand for</h2></div>
     <div class="method">
       <div>
         <svg viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="30" r="6"/><circle cx="24" cy="30" r="6"/><circle cx="36" cy="30" r="6"/><path d="M8 14h28"/></svg>
-        <h3 data-k="m1H">Concrete first</h3>
-        <p data-k="m1P">Children meet a number as things they can count, move and group before they meet it as a symbol.</p>
+        <h3 data-k="m1H">Hands before symbols.</h3>
+        <p data-k="m1P">A child should hold three things before writing 3. Understanding starts in the hands, not on the page.</p>
       </div>
       <div>
         <svg viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M8 34c6-14 10-22 14-22s6 10 14 22"/><circle cx="22" cy="12" r="2.5" fill="currentColor"/></svg>
-        <h3 data-k="m2H">Play with purpose</h3>
-        <p data-k="m2P">Every game maps to a lesson objective. Feedback is immediate, kind, and uses the child's own name.</p>
+        <h3 data-k="m2H">Every tap teaches.</h3>
+        <p data-k="m2P">Nothing is there just to look nice. If a game does not teach, it does not reach the classroom.</p>
       </div>
       <div>
         <svg viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M8 36V8M8 36h30"/><path d="M14 28l7-7 6 4 9-11"/></svg>
-        <h3 data-k="m3H">Evidence after</h3>
-        <p data-k="m3P">Results come back as data, so I can see which ideas landed and which need another lesson.</p>
+        <h3 data-k="m3H">Proof, not hope.</h3>
+        <p data-k="m3P">I don't guess whether a lesson worked. I measure it, and I teach again where it didn't.</p>
       </div>
     </div>
   </div>
@@ -348,13 +351,13 @@ dialog.win[open]{display:grid;grid-template-rows:auto 1fr;animation:pop .32s cub
 <section class="sec ruled about" id="about">
   <div class="wrap">
     <div>
-      <blockquote data-k="quote">“A child understands a number once they can hold it.”</blockquote>
+      <blockquote data-k="quote">“Every child can do maths. My job is to find the door.”</blockquote>
       <!-- portrait: add a photo named me.jpg to the site and it appears here -->
       <figure class="portrait" id="portrait" hidden><img src="me.jpg" alt="Reem Eyada" onload="document.getElementById('portrait').hidden=false" onerror="this.remove()"></figure>
     </div>
     <div>
-      <p data-k="ab1">I'm Reem Eyada, a mathematics teacher who designs digital learning. I build games and modules in Arabic and English for primary classrooms, test them with real children, and read the data to decide what to teach next.</p>
-      <p data-k="ab2">The games on this page are free for teachers and families to use.</p>
+      <p data-k="ab1">I'm Reem, a maths teacher. I build what my classroom needs and can't find: games that make numbers make sense, in the language children think in. Then I read the data to see whether they truly learned.</p>
+      <p data-k="ab2">Every game on this page is free, for every teacher and every family.</p>
     </div>
   </div>
 </section>
@@ -362,8 +365,8 @@ dialog.win[open]{display:grid;grid-template-rows:auto 1fr;animation:pop .32s cub
 <section class="sec ruled contact" id="contact">
   <div class="wrap">
     <span class="label" data-k="cL">Contact</span>
-    <h2 data-k="cH">Let's build something children enjoy learning.</h2>
-    <p data-k="cP">I work with schools, teachers and education teams on maths games, e-learning modules and learning data. Write to me in Arabic or English.</p>
+    <h2 data-k="cH">Your students deserve maths that makes sense.</h2>
+    <p data-k="cP">Tell me the lesson that isn't landing. I'll help you turn it into something children want to play. For schools, teachers and education teams, in Arabic or English.</p>
     <a class="mail ltr" href="mailto:reemseyada@gmail.com" id="mailLink">reemseyada@gmail.com</a>
     <div class="links-row">
       <a class="btn" href="mailto:reemseyada@gmail.com"><span data-k="cSend">Send an email</span> <span class="arr">→</span></a>
@@ -425,15 +428,15 @@ const AR={
   anP:'لوحة بيانات تقيس أثر الوحدة على ١٢٠ طالبًا، وتحدّد الموضوعات والطلاب الذين يحتاجون إلى متابعة.',
   data:'البيانات',anD:'افتراضية، ١٢٠ طالبًا',shows:'تعرض',anS:'الأثر، الموضوعات الصعبة، قائمة الدعم',openDash:'افتح لوحة البيانات',
   also:'أيضًا: <a href="case-study.pdf" target="_blank" rel="noopener">دراسة الحالة (PDF) ↗</a> · المشاريع النموذجية تستخدم بيانات افتراضية.',
-  methodH:'طريقتي في العمل',
-  m1H:'المحسوس أولًا',m1P:'يتعرّف الطفل على العدد أشياءً يعدّها ويحرّكها ويجمعها، قبل أن يتعرّف عليه رمزًا.',
-  m2H:'لعب له هدف',m2P:'كل لعبة مرتبطة بهدف من أهداف الدرس، والتغذية الراجعة فورية ولطيفة وتنادي الطفل باسمه.',
-  m3H:'الدليل بعد ذلك',m3P:'تعود النتائج إليّ بيانات، فأعرف أي الأفكار وصلت وأيها يحتاج إلى درس آخر.',
-  quote:'«يفهم الطفل العدد حين يستطيع أن يمسكه بيده.»',
-  ab1:'أنا ريم، معلّمة رياضيات أصمّم تجارب تعلّم رقمية. أبني ألعابًا ووحدات تعليمية بالعربية والإنجليزية لصفوف المرحلة الابتدائية، وأجرّبها مع الأطفال، ثم أقرأ البيانات لأقرّر ماذا أعلّم بعد ذلك.',
-  ab2:'الألعاب في هذه الصفحة مجانية للمعلّمين والأهالي.',
-  cL:'تواصل',cH:'لنصنع معًا تعلّمًا يستمتع به الأطفال.',
-  cP:'أتعاون مع المدارس والمعلّمين وفرق التعليم في ألعاب الرياضيات والوحدات الإلكترونية وبيانات التعلّم. يسعدني تواصلك بالعربية أو الإنجليزية.',
+  methodH:'ما أؤمن به',
+  m1H:'اليد قبل الرمز.',m1P:'على الطفل أن يمسك ثلاثة أشياء قبل أن يكتب ٣. الفهم يبدأ من اليد، لا من الورقة.',
+  m2H:'كل لمسة تُعلّم.',m2P:'لا شيء هنا للزينة فقط. اللعبة التي لا تُعلّم لا تدخل الصف.',
+  m3H:'الدليل، لا الأمل.',m3P:'لا أخمّن إن نجح الدرس. أقيسه، وأعيد التعليم حيث لم ينجح.',
+  quote:'«كل طفل قادر على تعلّم الرياضيات، ومهمّتي أن أجد له الباب.»',
+  ab1:'أنا ريم، معلّمة رياضيات. أصنع ما يحتاجه صفّي ولا أجده: ألعابًا تجعل الأعداد مفهومة، باللغة التي يفكّر بها الأطفال. ثم أقرأ البيانات لأتأكّد أنهم تعلّموا حقًّا.',
+  ab2:'كل لعبة في هذه الصفحة مجانية، لكل معلّم ولكل عائلة.',
+  cL:'تواصل',cH:'طلابك يستحقون رياضيات يفهمونها.',
+  cP:'أخبرني عن الدرس الذي لا يصل إلى طلابك، وسأساعدك على تحويله إلى شيء يتسابقون للعبه. للمدارس والمعلّمين وفرق التعليم، بالعربية أو الإنجليزية.',
   cSend:'أرسل رسالة',cCopy:'انسخ العنوان',cCv:'حمّل السيرة الذاتية',copied:'تمّ النسخ.',
   foot:'© ٢٠٢٦ Reem Eyada',
   wCopy:'انسخ الرابط',wNew:'صفحة جديدة ↗'
@@ -500,8 +503,9 @@ function open(id){
   document.getElementById('wUrl').textContent=full.replace(/^https?:\/\//,'');
   document.getElementById('wOpen').href=w.href;
   win.style.setProperty('--tint',w.tint);
-  wText.innerHTML='<span class="label">'+esc(t.label)+'</span><h3 id="wTitle">'+esc(t.title)+'</h3><p>'+esc(t.text)+'</p><ul>'+t.list.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul><p class="toast" id="wToast" hidden>'+(lang==='ar'?AR.copied:EN.copied)+'</p>';
-  wView.innerHTML='<div class="live'+(w.phone?'':' wide')+'"><iframe src="'+w.href+'" title="'+esc(t.title)+'"></iframe></div>';
+  const small=matchMedia('(max-width:700px)').matches;
+  wText.innerHTML='<span class="label">'+esc(t.label)+'</span><h3 id="wTitle">'+esc(t.title)+'</h3><p>'+esc(t.text)+'</p><ul>'+t.list.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul><a class="btn play" href="'+w.href+'" target="_blank" rel="noopener">'+(lang==='ar'?(w.phone?'ابدأ اللعب':'افتح العمل'):(w.phone?'Start playing':'Open it'))+' <span class="arr">→</span></a><p class="toast" id="wToast" hidden>'+(lang==='ar'?AR.copied:EN.copied)+'</p>';
+  wView.innerHTML=small?'':'<div class="live'+(w.phone?'':' wide')+'"><iframe src="'+w.href+'" title="'+esc(t.title)+'"></iframe></div>';
   document.getElementById('wCopy').onclick=()=>copy(full,document.getElementById('wToast'));
   if(win.showModal)win.showModal();else win.setAttribute('open','');
   track(id);
