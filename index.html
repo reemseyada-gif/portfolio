@@ -1,74 +1,275 @@
 <!doctype html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Reem Eyada | Portfolio</title>
-<meta name="description" content="Portfolio of Reem Eyada: e-learning developer, mathematics teacher and data analyst.">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>أ. ريم عيادة | Reem Eyada</title>
+<meta name="description" content="ألعاب تعليمية تفاعلية ومشاريع تعليمية من إعداد أ. ريم عيادة، معلمة رياضيات ومطوّرة محتوى تعليمي.">
 <meta name="author" content="Reem Eyada">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<meta property="og:title" content="أ. ريم عيادة | ألعاب ومشاريع تعليمية">
+<meta property="og:description" content="ألعاب تعليمية تفاعلية للأطفال، ومشاريع في تطوير المحتوى التعليمي وتحليل البيانات.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%231F3A5F'/%3E%3Cpath d='M12 48V16h11c7 0 9 4 9 8s-3 8-9 8h-11M22 32l11 16M38 48V16l8 16 8-16v32' fill='none' stroke='%23F8E09A' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;700;800&family=IBM+Plex+Sans+Arabic:wght@400;600&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
 <style>
-:root { --paper:#f3f6fa; --grid:#dde5ef; --surface:#fff; --ink:#1b2a41; --muted:#5b6b82; --line:#cfd9e6; --accent:#2756c5;
-  --f-display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif; --f-body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif; }
-@media (prefers-color-scheme: dark) { :root { --paper:#111824; --grid:#1a2433; --surface:#172131; --ink:#e6edf7; --muted:#9aabc2; --line:#2a3a52; --accent:#7aa2ff; color-scheme:dark; } }
-* { box-sizing:border-box; }
-html,body { margin:0; }
-body { background-color:var(--paper); background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px); background-size:24px 24px; color:var(--ink); font-family:var(--f-body); font-size:17px; line-height:1.6; }
-.wrap { max-width:860px; margin:0 auto; padding:56px max(16px,env(safe-area-inset-right,0px)) 64px max(16px,env(safe-area-inset-left,0px)); display:grid; gap:32px; }
-h1,h2 { font-family:var(--f-display); margin:0; line-height:1.15; text-wrap:balance; }
-h1 { font-size:clamp(2.2rem,6vw,3.2rem); font-weight:800; letter-spacing:-0.02em; }
-.role { color:var(--muted); font-size:1.1rem; margin:6px 0 0; }
-p { margin:0; max-width:65ch; }
-.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr)); gap:16px; }
-a.card { display:grid; gap:8px; align-content:start; background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:22px; color:inherit; text-decoration:none; transition:border-color .2s; }
-a.card:hover, a.card:focus-visible { border-color:var(--accent); outline:none; }
-.tag { font-size:.75rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); font-weight:700; }
-.card h2 { font-size:1.25rem; }
-.card p { color:var(--muted); font-size:.95rem; }
-.go { color:var(--accent); font-weight:700; font-size:.95rem; }
-footer { color:var(--muted); font-size:.9rem; }
+/* Layout: animated sky band with the RM signature, then a graph-paper page: playful games first, calm professional projects after, about, signature footer. Single daytime look by design. */
+:root{
+  --paper:#F5F8F6;
+  --grid:#E1EAE5;
+  --card:#FFFFFF;
+  --ink:#1F3A5F;
+  --muted:#5B6E7E;
+  --line:#D6E2DD;
+  --navy:#1F3A5F;
+  --butter:#F8E09A; --butter-d:#B88A1C;
+  --mint:#A6D8BD; --mint-d:#3F8F6A;
+  --coral:#F4A893; --coral-d:#C9604A;
+  --lav:#C9BCEB; --lav-d:#6E5BAE;
+  --sky:#AFDAEC; --sky-d:#3C86A6;
+  --f-ar-display:"Baloo Bhaijaan 2","Tajawal",system-ui,sans-serif;
+  --f-ar-body:"IBM Plex Sans Arabic","Tajawal",system-ui,sans-serif;
+  --f-en-display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --f-en-body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+[hidden]{display:none !important}
+html,body{margin:0}
+body{background-color:var(--paper);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:26px 26px;color:var(--ink);font-family:var(--f-ar-body);font-size:17px;line-height:1.7}
+html[lang="en"] body{font-family:var(--f-en-body)}
+.d{font-family:var(--f-ar-display)}
+html[lang="en"] .d{font-family:var(--f-en-display);letter-spacing:-.01em}
+:focus-visible{outline:3px solid var(--sky-d);outline-offset:3px;border-radius:10px}
+a{color:inherit}
+
+/* ---------- sky band ---------- */
+.sky{position:relative;overflow:hidden;background:var(--sky);border-bottom:4px solid var(--mint)}
+.sky svg.bg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.rays{transform-box:fill-box;transform-origin:center;animation:spin 20s linear infinite}
+.cloud{animation:drift linear infinite}
+.c1{animation-duration:56s}.c2{animation-duration:70s;animation-delay:-30s}.c3{animation-duration:62s;animation-delay:-14s}
+.floaty{position:absolute;font-family:var(--f-ar-display);font-weight:800;color:rgba(31,58,95,.18);animation:floatUp 9s ease-in-out infinite;pointer-events:none;user-select:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes drift{from{transform:translateX(-220px)}to{transform:translateX(1240px)}}
+@keyframes floatUp{50%{transform:translateY(-14px) rotate(6deg)}}
+
+.hero{position:relative;max-width:1000px;margin:0 auto;padding-block:26px 46px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:14px;justify-items:start}
+.topline{width:100%;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.lang{cursor:pointer;border:2px solid #FFFFFF;background:rgba(255,255,255,.85);border-radius:999px;padding:2px 16px;font:700 15px/1.8 var(--f-en-body);color:var(--ink);box-shadow:0 3px 0 rgba(31,58,95,.12)}
+.sig{width:clamp(120px,22vw,170px);height:auto;display:block}
+.sig .stroke{fill:none;stroke:var(--navy);stroke-width:7;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:var(--len);stroke-dashoffset:var(--len);animation:write 1.6s ease forwards}
+.sig .s2{animation-delay:.9s}.sig .s3{animation-delay:1.7s;stroke:var(--coral-d);stroke-width:5}
+.sig .dot{fill:var(--butter-d);opacity:0;animation:appear .4s 2.4s forwards}
+@keyframes write{to{stroke-dashoffset:0}}
+@keyframes appear{to{opacity:1}}
+.hero h1{margin:0;font-size:clamp(36px,7vw,58px);font-weight:800;line-height:1.15;text-wrap:balance}
+.role{margin:0;font-size:clamp(17px,2.6vw,21px);color:var(--ink);opacity:.85;font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:rgba(255,255,255,.85);border-radius:999px;padding:2px 14px;font-size:15px;font-weight:600;border:2px solid #FFFFFF}
+.jump{display:flex;flex-wrap:wrap;gap:12px;margin-top:6px}
+.btn{display:inline-flex;align-items:center;gap:8px;text-decoration:none;border-radius:16px;padding:8px 22px;font-weight:700;font-size:17px;transition:transform .12s}
+.btn:active{transform:translateY(2px)}
+.btn.primary{background:var(--navy);color:#FFFFFF;box-shadow:0 4px 0 #0F2440}
+.btn.ghost{background:#FFFFFF;color:var(--ink);box-shadow:0 4px 0 var(--line)}
+
+/* ---------- page ---------- */
+main{max-width:1000px;margin:0 auto;padding-block:34px 20px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:52px}
+section{display:grid;gap:18px}
+.sec-head{display:grid;gap:4px}
+.eyebrow{font-size:14px;font-weight:700;letter-spacing:.06em;color:var(--sky-d)}
+h2{margin:0;font-size:clamp(28px,5vw,40px);font-weight:800;line-height:1.2;text-wrap:balance}
+.sec-head p{margin:0;color:var(--muted);max-width:62ch}
+
+/* games: playful */
+.games{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:20px}
+.game{display:grid;text-decoration:none;color:inherit;background:var(--card);border-radius:28px;overflow:hidden;border:3px solid var(--line);box-shadow:0 6px 0 var(--line);transition:transform .2s,border-color .2s}
+.game:hover,.game:focus-visible{transform:translateY(-5px) rotate(-.4deg);border-color:var(--butter-d);outline:none}
+.game .art{height:170px;display:grid;place-items:center;position:relative;overflow:hidden}
+.game .art svg{height:100%;width:auto;max-width:100%}
+.game .grade{position:absolute;top:12px;inset-inline-start:12px;background:#FFFFFF;border-radius:999px;padding:0 14px;font-weight:800;font-size:15px;font-family:var(--f-ar-display);box-shadow:0 3px 0 rgba(31,58,95,.12)}
+.game .body{padding:16px 20px 20px;display:grid;gap:6px}
+.game h3{margin:0;font-size:26px;font-weight:800;line-height:1.25}
+.game p{margin:0;color:var(--muted);font-size:16px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.tags span{font-size:13px;border-radius:999px;padding:0 10px;background:var(--paper);border:1px solid var(--line)}
+.play{margin-top:8px;justify-self:start;background:var(--mint-d);color:#FFFFFF;border-radius:14px;padding:4px 18px;font-weight:700;box-shadow:0 4px 0 #2C6A4D}
+
+/* projects: calm */
+.projects{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px}
+.proj{display:grid;gap:8px;align-content:start;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;transition:border-color .2s}
+.proj:hover,.proj:focus-visible{border-color:var(--navy);outline:none}
+.proj .kind{font-size:12.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--sky-d);font-weight:700;font-family:var(--f-en-body)}
+html[lang="ar"] .proj .kind{text-transform:none;letter-spacing:0;font-family:var(--f-ar-body);font-size:14px}
+.proj h3{margin:0;font-size:21px;font-weight:800;line-height:1.3}
+.proj p{margin:0;color:var(--muted);font-size:15.5px}
+.proj .go{color:var(--navy);font-weight:700;font-size:15px}
+.note{margin:0;color:var(--muted);font-size:14px}
+
+/* about */
+.about{background:var(--card);border-radius:24px;border:1px solid var(--line);padding:clamp(20px,4vw,34px);display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:center}
+@media (max-width:620px){.about{grid-template-columns:1fr}}
+.about .badge{width:110px;height:110px;border-radius:28px;background:var(--navy);display:grid;place-items:center;box-shadow:0 6px 0 #0F2440}
+.about .badge svg{width:80px;height:auto}
+.about p{margin:0;max-width:64ch}
+
+/* footer signature */
+footer{display:grid;justify-items:center;gap:6px;padding-block:20px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+footer .sig{width:120px}
+footer .by{display:flex;align-items:center;gap:10px}
+footer .by span{color:var(--muted);font-weight:600}
+footer .name{display:inline-block;font-size:clamp(26px,5vw,34px);font-weight:800;background:linear-gradient(90deg,var(--lav-d),var(--coral-d),var(--mint-d),var(--sky-d),var(--lav-d));background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;animation:shine 6s linear infinite,bob 2.8s ease-in-out infinite}
+footer small{color:var(--muted)}
+@keyframes shine{to{background-position:300% 0}}
+@keyframes bob{50%{transform:translateY(-5px)}}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition:none !important}
+  .sig .stroke{stroke-dashoffset:0}
+}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <h1>Reem Eyada</h1>
-    <p class="role">E-learning Developer · Mathematics Teacher · Data Analyst</p>
-  </header>
-  <p>I design learning experiences that are clear, engaging and measurable. These sample projects show how I take one topic from classroom insight, to an interactive module, to data that shows whether it worked.</p>
-  <div class="grid">
-    <a class="card" href="balancing-act/">
-      <span class="tag">E-learning development</span>
-      <h2>The Balancing Act</h2>
-      <p>An interactive math module on two-step equations, with a balance-scale explorer, practice and a knowledge check.</p>
-      <span class="go">Open the module →</span>
-    </a>
-    <a class="card" href="learning-analytics/">
-      <span class="tag">Data analysis</span>
-      <h2>Math Learning Analytics</h2>
-      <p>A dashboard measuring the module's impact on 120 students, with weak topics and students who need support.</p>
-      <span class="go">Open the dashboard →</span>
-    </a>
-    <a class="card" href="thousands-game/">
-      <span class="tag">Educational game</span>
-      <h2>رحلة الآلاف</h2>
-      <p>An Arabic game for grade 3 on numbers up to 9999, with balloons, flip cards and drag-and-drop.</p>
-      <span class="go">Play the game →</span>
-    </a>
-    <a class="card" href="numbers-1-2-3/">
-      <span class="tag">Educational game</span>
-      <h2>أعدادي الأولى ١ ٢ ٣</h2>
-      <p>An Arabic game for grade 1 on the numbers 1 to 3: counting pictures, flip-card pairs, a fruit basket and finger tracing.</p>
-      <span class="go">Play the game →</span>
-    </a>
-    <a class="card" href="case-study.pdf">
-      <span class="tag">Instructional design</span>
-      <h2>Case Study</h2>
-      <p>The challenge, design decisions, development and results behind the project.</p>
-      <span class="go">Read the case study →</span>
-    </a>
+
+<header class="sky">
+  <svg class="bg" viewBox="0 0 1000 360" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+    <defs><linearGradient id="skyg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#BFE2F1"/><stop offset="1" stop-color="#EAF6F1"/></linearGradient></defs>
+    <rect width="1000" height="360" fill="url(#skyg)"/>
+    <g transform="translate(880 80)">
+      <g class="rays"><g stroke="#F3C55A" stroke-width="6" stroke-linecap="round"><line x1="0" y1="-52" x2="0" y2="-40"/><line x1="0" y1="40" x2="0" y2="52"/><line x1="-52" y1="0" x2="-40" y2="0"/><line x1="40" y1="0" x2="52" y2="0"/><line x1="-37" y1="-37" x2="-28" y2="-28"/><line x1="28" y1="28" x2="37" y2="37"/><line x1="-37" y1="37" x2="-28" y2="28"/><line x1="28" y1="-28" x2="37" y2="-37"/></g></g>
+      <circle r="30" fill="#F8D978"/>
+    </g>
+    <g class="cloud c1"><g transform="translate(0 50)" fill="#FFFFFF" opacity=".95"><ellipse cx="40" cy="20" rx="40" ry="17"/><ellipse cx="70" cy="10" rx="30" ry="21"/><ellipse cx="100" cy="21" rx="30" ry="15"/></g></g>
+    <g class="cloud c2"><g transform="translate(0 130)" fill="#FFFFFF" opacity=".8"><ellipse cx="30" cy="15" rx="30" ry="12"/><ellipse cx="55" cy="8" rx="24" ry="16"/><ellipse cx="80" cy="16" rx="25" ry="11"/></g></g>
+    <g class="cloud c3"><g transform="translate(0 20)" fill="#FFFFFF" opacity=".9"><ellipse cx="34" cy="18" rx="34" ry="14"/><ellipse cx="62" cy="9" rx="26" ry="19"/><ellipse cx="88" cy="19" rx="28" ry="13"/></g></g>
+    <path d="M0 320 Q200 280 420 310 T820 300 T1000 292 L1000 360 L0 360Z" fill="#B9E0C6"/>
+    <path d="M0 340 Q260 318 520 342 T1000 332 L1000 360 L0 360Z" fill="#9ED2B6"/>
+  </svg>
+  <span class="floaty" style="top:16%;inset-inline-end:22%;font-size:44px">٣</span>
+  <span class="floaty" style="top:55%;inset-inline-end:8%;font-size:36px;animation-delay:-3s">+</span>
+  <span class="floaty" style="top:30%;inset-inline-end:40%;font-size:30px;animation-delay:-5s">٢</span>
+  <span class="floaty" style="top:62%;inset-inline-end:30%;font-size:38px;animation-delay:-2s">=</span>
+  <span class="floaty" style="top:12%;inset-inline-end:58%;font-size:34px;animation-delay:-6s">١</span>
+
+  <div class="hero">
+    <div class="topline">
+      <svg class="sig" viewBox="0 0 170 92" role="img" aria-label="RM">
+        <path class="stroke" style="--len:200" d="M18 74 V20 H44 C60 20 64 30 64 38 C64 48 56 55 42 55 H18 M40 55 L64 76"/>
+        <path class="stroke s2" style="--len:220" d="M80 76 V22 L102 58 L124 22 V76"/>
+        <path class="stroke s3" style="--len:160" d="M14 86 C50 80 100 80 156 84"/>
+        <circle class="dot" cx="140" cy="28" r="6"/>
+      </svg>
+      <button class="lang" id="langBtn" type="button" aria-label="Switch language">English</button>
+    </div>
+    <h1 class="d" data-ar="أ. ريم عيادة" data-en="Reem Eyada">أ. ريم عيادة</h1>
+    <p class="role" data-ar="معلمة رياضيات · مطوّرة محتوى تعليمي · محللة بيانات" data-en="Mathematics Teacher · E-learning Developer · Data Analyst">معلمة رياضيات · مطوّرة محتوى تعليمي · محللة بيانات</p>
+    <div class="jump">
+      <a class="btn primary" href="#games" data-ar="ألعاب للأطفال" data-en="Games for children">ألعاب للأطفال</a>
+      <a class="btn ghost" href="#projects" data-ar="مشاريعي المهنية" data-en="Professional projects">مشاريعي المهنية</a>
+    </div>
   </div>
-  <footer>Sample projects use synthetic data. No real student data is shown.</footer>
-</div>
+</header>
+
+<main>
+  <section id="games" aria-labelledby="games-title">
+    <div class="sec-head">
+      <span class="eyebrow" data-ar="للأهل والطلاب" data-en="For parents and students">للأهل والطلاب</span>
+      <h2 class="d" id="games-title" data-ar="ألعابي التعليمية" data-en="My learning games">ألعابي التعليمية</h2>
+      <p data-ar="ألعاب تفاعلية بالعربية تعمل على الهاتف مباشرة، دون تسجيل أو تحميل." data-en="Interactive Arabic games that run right on a phone, with no sign-up or download.">ألعاب تفاعلية بالعربية تعمل على الهاتف مباشرة، دون تسجيل أو تحميل.</p>
+    </div>
+    <div class="games">
+      <a class="game" href="numbers-1-2-3/">
+        <span class="art" style="background:#FDEEE8">
+          <span class="grade" data-ar="الصف الأول" data-en="Grade 1">الصف الأول</span>
+          <svg viewBox="0 0 300 170" aria-hidden="true"><g font-family="Baloo Bhaijaan 2, sans-serif" font-weight="800" text-anchor="middle"><rect x="40" y="44" width="62" height="70" rx="18" fill="#F4A893"/><text x="71" y="98" font-size="48" fill="#FFFFFF">١</text><rect x="119" y="34" width="62" height="70" rx="18" fill="#A6D8BD"/><text x="150" y="88" font-size="48" fill="#FFFFFF">٢</text><rect x="198" y="44" width="62" height="70" rx="18" fill="#C9BCEB"/><text x="229" y="98" font-size="48" fill="#FFFFFF">٣</text></g><g fill="#F08A7A"><circle cx="120" cy="140" r="10"/><circle cx="150" cy="140" r="10"/><circle cx="180" cy="140" r="10"/></g></svg>
+        </span>
+        <span class="body">
+          <h3 class="d" data-ar="أعدادي الأولى" data-en="My First Numbers">أعدادي الأولى</h3>
+          <p data-ar="الأعداد ١ و٢ و٣: نعدّ الصور، ونطابق الرقم مع كلمته، ونكتبه بالإصبع." data-en="Numbers 1, 2 and 3: count pictures, match each digit to its word, and trace it with a finger.">الأعداد ١ و٢ و٣: نعدّ الصور، ونطابق الرقم مع كلمته، ونكتبه بالإصبع.</p>
+          <span class="tags"><span data-ar="بالونات" data-en="Balloons">بالونات</span><span data-ar="بطاقات قلّابة" data-en="Flip cards">بطاقات قلّابة</span><span data-ar="كتابة بالإصبع" data-en="Finger tracing">كتابة بالإصبع</span></span>
+          <span class="play" data-ar="العب الآن" data-en="Play now">العب الآن</span>
+        </span>
+      </a>
+      <a class="game" href="thousands-game/">
+        <span class="art" style="background:#E3F1F8">
+          <span class="grade" data-ar="الصف الثالث" data-en="Grade 3">الصف الثالث</span>
+          <svg viewBox="0 0 300 170" aria-hidden="true"><g font-family="Baloo Bhaijaan 2, sans-serif" font-weight="800" text-anchor="middle" fill="#1F3A5F"><ellipse cx="95" cy="70" rx="40" ry="48" fill="#F8E09A"/><text x="95" y="80" font-size="24">٣٠٠٠</text><path d="M95 118 q-6 20 2 40" stroke="#5B6E7E" stroke-width="2" fill="none"/><ellipse cx="205" cy="62" rx="40" ry="48" fill="#C9BCEB"/><text x="205" y="72" font-size="24">٩٩٩٩</text><path d="M205 110 q6 22 -2 46" stroke="#5B6E7E" stroke-width="2" fill="none"/></g></svg>
+        </span>
+        <span class="body">
+          <h3 class="d" data-ar="رحلة الآلاف" data-en="The Thousands Journey">رحلة الآلاف</h3>
+          <p data-ar="الأعداد حتى ٩٩٩٩: قيمة الألف، وقراءة العدد وكتابته، وربطه بالكلمات." data-en="Numbers up to 9999: the value of a thousand, reading and writing numbers, and linking them to words.">الأعداد حتى ٩٩٩٩: قيمة الألف، وقراءة العدد وكتابته، وربطه بالكلمات.</p>
+          <span class="tags"><span data-ar="بالونات" data-en="Balloons">بالونات</span><span data-ar="بطاقات قلّابة" data-en="Flip cards">بطاقات قلّابة</span><span data-ar="سحب وإفلات" data-en="Drag and drop">سحب وإفلات</span></span>
+          <span class="play" data-ar="العب الآن" data-en="Play now">العب الآن</span>
+        </span>
+      </a>
+    </div>
+  </section>
+
+  <section id="projects" aria-labelledby="proj-title">
+    <div class="sec-head">
+      <span class="eyebrow" data-ar="ملف الأعمال" data-en="Portfolio">ملف الأعمال</span>
+      <h2 class="d" id="proj-title" data-ar="مشاريعي المهنية" data-en="Professional projects">مشاريعي المهنية</h2>
+      <p data-ar="أصمّم تجارب تعلّم واضحة وممتعة وقابلة للقياس. تُظهر هذه المشاريع كيف أنقل موضوعاً واحداً من ملاحظة داخل الصف، إلى وحدة تفاعلية، إلى بيانات تبيّن أثرها." data-en="I design learning experiences that are clear, engaging and measurable. These projects show how I take one topic from classroom insight, to an interactive module, to data that shows whether it worked.">أصمّم تجارب تعلّم واضحة وممتعة وقابلة للقياس. تُظهر هذه المشاريع كيف أنقل موضوعاً واحداً من ملاحظة داخل الصف، إلى وحدة تفاعلية، إلى بيانات تبيّن أثرها.</p>
+    </div>
+    <div class="projects">
+      <a class="proj" href="balancing-act/">
+        <span class="kind" data-ar="تطوير محتوى إلكتروني" data-en="E-learning development">تطوير محتوى إلكتروني</span>
+        <h3 class="d">The Balancing Act</h3>
+        <p data-ar="وحدة رياضيات تفاعلية عن المعادلات ذات الخطوتين، فيها مستكشف الميزان، وتمارين، واختبار قصير." data-en="An interactive math module on two-step equations, with a balance-scale explorer, practice and a knowledge check.">وحدة رياضيات تفاعلية عن المعادلات ذات الخطوتين، فيها مستكشف الميزان، وتمارين، واختبار قصير.</p>
+        <span class="go" data-ar="افتح الوحدة ←" data-en="Open the module →">افتح الوحدة ←</span>
+      </a>
+      <a class="proj" href="learning-analytics/">
+        <span class="kind" data-ar="تحليل بيانات" data-en="Data analysis">تحليل بيانات</span>
+        <h3 class="d">Math Learning Analytics</h3>
+        <p data-ar="لوحة بيانات تقيس أثر الوحدة على ١٢٠ طالباً، وتُظهر المواضيع الضعيفة والطلاب الذين يحتاجون دعماً." data-en="A dashboard measuring the module's impact on 120 students, with weak topics and students who need support.">لوحة بيانات تقيس أثر الوحدة على ١٢٠ طالباً، وتُظهر المواضيع الضعيفة والطلاب الذين يحتاجون دعماً.</p>
+        <span class="go" data-ar="افتح اللوحة ←" data-en="Open the dashboard →">افتح اللوحة ←</span>
+      </a>
+      <a class="proj" href="case-study.pdf">
+        <span class="kind" data-ar="تصميم تعليمي" data-en="Instructional design">تصميم تعليمي</span>
+        <h3 class="d" data-ar="دراسة الحالة" data-en="Case Study">دراسة الحالة</h3>
+        <p data-ar="التحدي، وقرارات التصميم، ومراحل التطوير، والنتائج وراء المشروع." data-en="The challenge, design decisions, development and results behind the project.">التحدي، وقرارات التصميم، ومراحل التطوير، والنتائج وراء المشروع.</p>
+        <span class="go" data-ar="اقرأ الدراسة ←" data-en="Read the case study →">اقرأ الدراسة ←</span>
+      </a>
+    </div>
+    <p class="note" data-ar="تستخدم المشاريع النموذجية بيانات تجريبية، ولا تُعرض فيها بيانات طلاب حقيقية." data-en="Sample projects use synthetic data. No real student data is shown.">تستخدم المشاريع النموذجية بيانات تجريبية، ولا تُعرض فيها بيانات طلاب حقيقية.</p>
+  </section>
+
+  <section aria-labelledby="about-title">
+    <div class="about">
+      <span class="badge" aria-hidden="true"><svg viewBox="0 0 170 92"><path d="M18 74 V20 H44 C60 20 64 30 64 38 C64 48 56 55 42 55 H18 M40 55 L64 76" fill="none" stroke="#F8E09A" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M80 76 V22 L102 58 L124 22 V76" fill="none" stroke="#F8E09A" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="140" cy="28" r="7" fill="#F4A893"/></svg></span>
+      <div style="display:grid;gap:8px;min-width:0">
+        <h2 class="d" id="about-title" style="font-size:clamp(24px,4vw,32px)" data-ar="نبذة عني" data-en="About me">نبذة عني</h2>
+        <p data-ar="أنا ريم عيادة، معلمة رياضيات أحبّ أن يتعلّم الأطفال باللعب والاكتشاف. أجمع بين خبرتي داخل الصف وتصميم المحتوى الرقمي وتحليل البيانات، لأبني تجارب تعلّم تفاعلية يستمتع بها الطلاب ويُقاس أثرها." data-en="I'm Reem Eyada, a mathematics teacher who loves helping children learn through play and discovery. I combine classroom experience with digital content design and data analysis to build interactive learning that students enjoy and whose impact can be measured.">أنا ريم عيادة، معلمة رياضيات أحبّ أن يتعلّم الأطفال باللعب والاكتشاف. أجمع بين خبرتي داخل الصف وتصميم المحتوى الرقمي وتحليل البيانات، لأبني تجارب تعلّم تفاعلية يستمتع بها الطلاب ويُقاس أثرها.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <svg class="sig" viewBox="0 0 170 92" role="img" aria-label="RM">
+    <path class="stroke" style="--len:200" d="M18 74 V20 H44 C60 20 64 30 64 38 C64 48 56 55 42 55 H18 M40 55 L64 76"/>
+    <path class="stroke s2" style="--len:220" d="M80 76 V22 L102 58 L124 22 V76"/>
+    <path class="stroke s3" style="--len:160" d="M14 86 C50 80 100 80 156 84"/>
+    <circle class="dot" cx="140" cy="28" r="6"/>
+  </svg>
+  <span class="by"><span data-ar="إعداد" data-en="Made by">إعداد</span><span class="name d" data-ar="أ. ريم" data-en="Reem Eyada">أ. ريم</span></span>
+</footer>
+
+<script>
+(function(){
+  const root=document.documentElement,btn=document.getElementById('langBtn');
+  function apply(l){
+    root.lang=l;root.dir=l==='ar'?'rtl':'ltr';
+    document.querySelectorAll('[data-ar]').forEach(el=>{el.textContent=el.getAttribute('data-'+l);});
+    btn.textContent=l==='ar'?'English':'العربية';
+    btn.setAttribute('aria-label',l==='ar'?'Switch to English':'التبديل إلى العربية');
+    document.title=l==='ar'?'أ. ريم عيادة | Reem Eyada':'Reem Eyada | أ. ريم عيادة';
+  }
+  let lang='ar';try{lang=localStorage.getItem('site-lang')||'ar';}catch(e){}
+  if(lang!=='ar')apply(lang);
+  btn.addEventListener('click',()=>{lang=root.lang==='ar'?'en':'ar';apply(lang);try{localStorage.setItem('site-lang',lang);}catch(e){}});
+})();
+</script>
 </body>
 </html>
