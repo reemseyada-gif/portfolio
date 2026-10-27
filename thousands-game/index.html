@@ -592,7 +592,16 @@ function variants(n){
 
 /* ---------- result overlay ---------- */
 let after=null;
+/* ---------- send results to Google Sheets ---------- */
+const RESULTS_URL='';
+const GAME_NAMES={g1:'فرقعة البالونات',g2:'البطاقات القلّابة',g3:'اسحب واكتب'};
+function sendResult(g,stars){
+  if(!RESULTS_URL)return;
+  const miss={g1:G1.miss,g2:G2.miss,g3:G3.miss}[g];
+  try{fetch(RESULTS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({name:S.name,game:GAME_NAMES[g],stars:stars,mistakes:miss})}).catch(()=>{});}catch(e){}
+}
 function finish(g,stars){
+  sendResult(g,stars);
   S.stars[g]=Math.max(S.stars[g],stars);save();refreshStars();
   $('#resStars').innerHTML=starRow(stars);
   $('#resTitle').textContent=stars===3?'مذهل يا '+nm()+'!':stars===2?'عمل رائع يا '+nm()+'!':'أحسنت المحاولة يا '+nm()+'!';
