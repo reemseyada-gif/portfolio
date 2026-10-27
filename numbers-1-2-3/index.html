@@ -627,25 +627,40 @@ function glyphCanvas(n,extra){
   return {c,y};
 }
 async function setupTrace(n){
-  try{await document.fonts.load('800 230px "Baloo Bhaijaan 2"',AR[n]);}catch(e){}
-  const dpr=Math.min(window.devicePixelRatio||1,2);
   const guide=$('#cvGuide'),draw=$('#cvDraw');if(!guide)return;
-  [guide,draw].forEach(cn=>{cn.width=TW*dpr;cn.height=TH*dpr;cn.getContext('2d').setTransform(dpr,0,0,dpr,0,0);});
-  const core=glyphCanvas(n,0),zone=glyphCanvas(n,40);
-  const coreData=core.c.getContext('2d').getImageData(0,0,TW,TH).data,zoneData=zone.c.getContext('2d').getImageData(0,0,TW,TH).data;
-  const segs=strokePath(coreData,n);
-  let sx=TW/2,sy=40;
-  if(segs.length&&segs[0].length){[sx,sy]=segs[0][0];}
-  else{outer:for(let y=0;y<TH;y++){for(let x=0;x<TW;x++){if(coreData[(y*TW+x)*4+3]>128){sx=x;sy=y;break outer;}}}}
-  T={n,coreData,zoneData,strokes:[],cur:null,sx,sy,core,segs,demo:0};
-  paintGuide(false);
+  T={n,ready:false,strokes:[],cur:null,demo:0,segs:[],pendingDemo:false};
+  const me=T;
   const toXY=e=>{const r=draw.getBoundingClientRect();return [(e.clientX-r.left)/r.width*TW,(e.clientY-r.top)/r.height*TH];};
-  draw.addEventListener('pointerdown',e=>{if(G3.lock)return;e.preventDefault();draw.setPointerCapture(e.pointerId);T.cur=[toXY(e)];T.strokes.push(T.cur);paintDraw();});
-  draw.addEventListener('pointermove',e=>{if(!T.cur)return;e.preventDefault();T.cur.push(toXY(e));paintDraw();});
-  const end=()=>{T.cur=null;};draw.addEventListener('pointerup',end);draw.addEventListener('pointercancel',end);
-  $('#tClear').addEventListener('click',()=>{T.strokes=[];paintDraw();});
+  draw.addEventListener('pointerdown',e=>{if(G3.lock||!me.ready)return;e.preventDefault();try{draw.setPointerCapture(e.pointerId);}catch(_){}me.cur=[toXY(e)];me.strokes.push(me.cur);paintDraw();});
+  draw.addEventListener('pointermove',e=>{if(!me.cur)return;e.preventDefault();me.cur.push(toXY(e));paintDraw();});
+  const end=()=>{me.cur=null;};draw.addEventListener('pointerup',end);draw.addEventListener('pointercancel',end);
+  $('#tClear').addEventListener('click',()=>{me.strokes=[];if(me.ready)paintDraw();});
   $('#tCheck').addEventListener('click',checkTrace);
   $('#tDemo').addEventListener('click',demoTrace);
+  try{await Promise.race([document.fonts.load('800 230px "Baloo Bhaijaan 2"',AR[n]),new Promise(r=>setTimeout(r,1500))]);}catch(e){}
+  if(T!==me||!$('#cvGuide'))return;
+  const dpr=Math.min(window.devicePixelRatio||1,2);
+  [guide,draw].forEach(cn=>{cn.width=TW*dpr;cn.height=TH*dpr;cn.getContext('2d').setTransform(dpr,0,0,dpr,0,0);});
+  const core=glyphCanvas(n,0),zone=glyphCanvas(n,56);
+  me.core=core;me.coreData=core.c.getContext('2d').getImageData(0,0,TW,TH).data;me.zoneData=zone.c.getContext('2d').getImageData(0,0,TW,TH).data;
+  try{me.segs=strokePath(me.coreData,n);}catch(e){me.segs=[];}
+  me.pathOK=pathCovers(me);
+  let sx=TW/2,sy=40;
+  if(me.pathOK){[sx,sy]=me.segs[0][0];}
+  else{outer:for(let y=0;y<TH;y++){for(let x=0;x<TW;x++){if(me.coreData[(y*TW+x)*4+3]>128){sx=x;sy=y+8;break outer;}}}}
+  me.sx=sx;me.sy=sy;me.ready=true;
+  paintGuide(false);
+  if(me.pendingDemo)demoTrace();
+}
+/* does the writing path pass over most of the digit? */
+function pathCovers(t){
+  if(!t.segs||!t.segs.length||t.segs[0].length<4)return false;
+  const c=document.createElement('canvas');c.width=TW;c.height=TH;const g=c.getContext('2d');
+  g.strokeStyle='#000';g.lineWidth=48;g.lineCap='round';g.lineJoin='round';
+  t.segs.forEach(sg=>{g.beginPath();sg.forEach(([x,y],i)=>i?g.lineTo(x,y):g.moveTo(x,y));g.stroke();});
+  const d=g.getImageData(0,0,TW,TH).data;let core=0,hit=0;
+  for(let i=3;i<d.length;i+=4){if(t.coreData[i]>128){core++;if(d[i]>128)hit++;}}
+  return core>0&&hit/core>=.75;
 }
 function paintGuide(done){
   const g=$('#cvGuide').getContext('2d');g.clearRect(0,0,TW,TH);
@@ -658,16 +673,16 @@ function paintDraw(){
   T.strokes.forEach(s=>{g.beginPath();s.forEach(([x,y],i)=>i?g.lineTo(x,y):g.moveTo(x,y));if(s.length===1)g.lineTo(s[0][0]+.1,s[0][1]);g.stroke();});
 }
 function checkTrace(){
-  if(G3.lock)return;
+  if(G3.lock||!T||!T.ready)return;
   if(!T.strokes.length){say('اكتب الرقم أولاً يا '+nm()+'، ابدأ من النقطة الخضراء.',3000);return;}
   const c=document.createElement('canvas');c.width=TW;c.height=TH;const g=c.getContext('2d');
-  g.strokeStyle='#000';g.lineWidth=26;g.lineCap='round';g.lineJoin='round';
+  g.strokeStyle='#000';g.lineWidth=30;g.lineCap='round';g.lineJoin='round';
   T.strokes.forEach(s=>{g.beginPath();s.forEach(([x,y],i)=>i?g.lineTo(x,y):g.moveTo(x,y));if(s.length===1)g.lineTo(s[0][0]+.1,s[0][1]);g.stroke();});
   const u=g.getImageData(0,0,TW,TH).data;let core=0,hit=0,user=0,out=0;
   for(let i=3;i<u.length;i+=4){const inCore=T.coreData[i]>128,inUser=u[i]>128;if(inCore){core++;if(inUser)hit++;}if(inUser){user++;if(T.zoneData[i]<=128)out++;}}
-  const cover=core?hit/core:0,outside=user?out/user:1;
-  if(cover>=.6&&outside<=.35){G3.lock=true;paintGuide(true);sfx.good();confetti(60);say(pick(PRAISE)+' كتبت '+AR[T.n]+' بشكل صحيح.',2800);goNext(1900);}
-  else{G3.miss++;sfx.bad();say(cover<.6?'اكتب فوق الخط كله يا '+nm()+'، من الأعلى إلى الأسفل.':'حاول أن تبقى على الخط يا '+nm()+'.',3200);setTimeout(()=>{T.strokes=[];paintDraw();},700);}
+  const cover=core?hit/core:0,inside=user?1-out/user:0,score=(cover+inside)/2;
+  if(score>=.7&&cover>=.45){G3.lock=true;paintGuide(true);sfx.good();confetti(60);say(pick(PRAISE)+' كتبت '+AR[T.n]+' بشكل صحيح.',2800);goNext(1900);}
+  else{G3.miss++;sfx.bad();say(cover<.45||cover<inside?'اكتب فوق الخط كله يا '+nm()+'، من الأعلى إلى الأسفل.':'حاول أن تبقى على الخط يا '+nm()+'.',3200);setTimeout(()=>{T.strokes=[];paintDraw();},700);}
 }
 /* centre line of the digit (thinning), ordered from the top-right start like handwriting */
 function strokePath(coreData,digit){
@@ -721,28 +736,38 @@ function strokePath(coreData,digit){
 }
 function demoTrace(){
   if(!T)return;
-  if(!T.segs||!T.segs.length){revealTrace();return;}
-  const run=++T.demo,g=$('#cvGuide').getContext('2d');
-  const lens=T.segs.map(sg=>{let L=0;for(let i=1;i<sg.length;i++)L+=Math.hypot(sg[i][0]-sg[i-1][0],sg[i][1]-sg[i-1][1]);return L;});
-  const total=lens.reduce((a,b)=>a+b,0)||1,dur=Math.max(1800,total*9);let t0=null;
+  if(!T.ready){T.pendingDemo=true;return;}
+  T.pendingDemo=false;
+  if(!T.pathOK){revealTrace();return;}
+  const run=++T.demo,g=$('#cvGuide').getContext('2d'),segs=T.segs;
+  const lens=segs.map(sg=>{let L=0;for(let i=1;i<sg.length;i++)L+=Math.hypot(sg[i][0]-sg[i-1][0],sg[i][1]-sg[i-1][1]);return L;});
+  const total=lens.reduce((a,b)=>a+b,0)||1,dur=Math.max(2000,total*9);let t0=null;
+  const ink=document.createElement('canvas');ink.width=TW;ink.height=TH;const ig=ink.getContext('2d');
+  ig.drawImage(T.core.c,0,0);ig.globalCompositeOperation='source-in';ig.fillStyle='#F8E09A';ig.fillRect(0,0,TW,TH);
+  const mask=document.createElement('canvas');mask.width=TW;mask.height=TH;const mg=mask.getContext('2d');
   const step=ts=>{
-    if(run!==T.demo||!$('#cvGuide'))return;
-    if(!t0)t0=ts;let rem=Math.min((ts-t0)/dur,1)*total;paintGuide(false);
-    g.save();g.strokeStyle='#F8E09A';g.lineWidth=18;g.lineCap='round';g.lineJoin='round';let pen=null;
-    for(let s=0;s<T.segs.length&&rem>0;s++){const sg=T.segs[s];g.beginPath();g.moveTo(sg[0][0],sg[0][1]);pen=sg[0];
-      for(let i=1;i<sg.length;i++){const d=Math.hypot(sg[i][0]-sg[i-1][0],sg[i][1]-sg[i-1][1]);
-        if(rem>=d){g.lineTo(sg[i][0],sg[i][1]);rem-=d;pen=sg[i];}
-        else{const f=rem/d,px=sg[i-1][0]+(sg[i][0]-sg[i-1][0])*f,py=sg[i-1][1]+(sg[i][1]-sg[i-1][1])*f;g.lineTo(px,py);pen=[px,py];rem=0;break;}}
-      g.stroke();}
-    if(pen){g.fillStyle='#F4A893';g.strokeStyle='#FFFFFF';g.lineWidth=3;g.beginPath();g.arc(pen[0],pen[1],12,0,7);g.fill();g.stroke();
-      g.fillStyle='#2A3F4A';g.beginPath();g.moveTo(pen[0]+6,pen[1]-6);g.lineTo(pen[0]+30,pen[1]-30);g.lineTo(pen[0]+36,pen[1]-24);g.lineTo(pen[0]+12,pen[1]);g.closePath();g.fill();}
-    g.restore();
-    if((ts-t0)<dur)requestAnimationFrame(step);else setTimeout(()=>{if(run===T.demo)paintGuide(false);},1000);
+    try{
+      if(run!==T.demo||!$('#cvGuide'))return;
+      if(!t0)t0=ts;let rem=Math.min((ts-t0)/dur,1)*total;paintGuide(false);
+      mg.globalCompositeOperation='source-over';mg.clearRect(0,0,TW,TH);
+      mg.strokeStyle='#000';mg.lineWidth=48;mg.lineCap='round';mg.lineJoin='round';let pen=null;
+      for(let s=0;s<segs.length&&rem>0;s++){const sg=segs[s];mg.beginPath();mg.moveTo(sg[0][0],sg[0][1]);pen=sg[0];
+        for(let i=1;i<sg.length;i++){const d=Math.hypot(sg[i][0]-sg[i-1][0],sg[i][1]-sg[i-1][1]);
+          if(rem>=d){mg.lineTo(sg[i][0],sg[i][1]);rem-=d;pen=sg[i];}
+          else{const f=rem/d,px=sg[i-1][0]+(sg[i][0]-sg[i-1][0])*f,py=sg[i-1][1]+(sg[i][1]-sg[i-1][1])*f;mg.lineTo(px,py);pen=[px,py];rem=0;break;}}
+        if(pen===sg[0])mg.lineTo(sg[0][0]+.1,sg[0][1]);
+        mg.stroke();}
+      mg.globalCompositeOperation='source-in';mg.drawImage(ink,0,0);
+      g.drawImage(mask,0,0);
+      if(pen){g.save();g.fillStyle='#F4A893';g.strokeStyle='#FFFFFF';g.lineWidth=3;g.beginPath();g.arc(pen[0],pen[1],12,0,7);g.fill();g.stroke();
+        g.fillStyle='#2A3F4A';g.beginPath();g.moveTo(pen[0]+6,pen[1]-6);g.lineTo(pen[0]+30,pen[1]-30);g.lineTo(pen[0]+36,pen[1]-24);g.lineTo(pen[0]+12,pen[1]);g.closePath();g.fill();g.restore();}
+      if((ts-t0)<dur)requestAnimationFrame(step);else setTimeout(()=>{if(run===T.demo)paintGuide(false);},1200);
+    }catch(e){revealTrace();}
   };
   requestAnimationFrame(step);
 }
-
 function revealTrace(){
+  if(!T||!T.core)return;
   const run=++T.demo,g=$('#cvGuide').getContext('2d');let t0=null;const dur=1800;
   const tmp=document.createElement('canvas');tmp.width=TW;tmp.height=TH;const tg=tmp.getContext('2d');tg.drawImage(T.core.c,0,0);tg.globalCompositeOperation='source-in';tg.fillStyle='#F8E09A';tg.fillRect(0,0,TW,TH);
   const step=ts=>{if(run!==T.demo||!$('#cvGuide'))return;if(!t0)t0=ts;const k=Math.min((ts-t0)/dur,1);paintGuide(false);
