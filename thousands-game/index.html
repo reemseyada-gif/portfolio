@@ -1,0 +1,805 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="لعبة تعليمية تفاعلية لطلاب الصف الثالث: الأعداد حتى ٩٩٩٩. إعداد أ. ريم">
+<meta property="og:title" content="رحلة الآلاف - لعبة الأعداد حتى ٩٩٩٩">
+<meta property="og:description" content="ثلاث ألعاب تفاعلية للصف الثالث: بالونات، بطاقات قلابة، اسحب واكتب. إعداد أ. ريم">
+<meta property="og:type" content="website">
+<meta name="author" content="أ. ريم">
+<title>رحلة الآلاف</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@400;600;800&display=swap">
+<style>
+/* Layout: animated sky band on top, one centred play card below; one screen visible at a time. Single daytime look by design. */
+:root{
+  --bg:#F2F6F1;
+  --card:#FFFFFF;
+  --ink:#24414B;
+  --muted:#5D7880;
+  --line:#D6E4E0;
+  --mint:#A6D8BD; --mint-d:#3F8F6A;
+  --coral:#F4A893; --coral-d:#C9604A;
+  --butter:#F8E09A; --butter-d:#B88A1C;
+  --lav:#C9BCEB; --lav-d:#6E5BAE;
+  --sky:#AFDAEC; --sky-d:#3C86A6;
+  --font:"Baloo Bhaijaan 2","Tajawal","Segoe UI",system-ui,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{background:var(--bg);color:var(--ink)}
+body{font-family:var(--font);font-size:18px;line-height:1.6}
+button{font-family:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--sky-d);outline-offset:3px;border-radius:12px}
+
+/* ---------- Sky band ---------- */
+.scene{position:relative;overflow:hidden;background:var(--sky);height:clamp(150px,22vw,210px);border-bottom:4px solid var(--mint)}
+.scene svg.sky{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:pointer}
+.rays{transform-box:fill-box;transform-origin:center;animation:spin 18s linear infinite}
+.sun-core{transform-box:fill-box;transform-origin:center;animation:breathe 3s ease-in-out infinite}
+.sun.spin .rays{animation-duration:1.2s}
+.cloud{animation:drift linear infinite}
+.c1{animation-duration:46s}.c2{animation-duration:62s;animation-delay:-30s}.c3{animation-duration:54s;animation-delay:-12s}
+.birds{animation:fly 26s linear infinite}
+.wing-b{transform-box:fill-box;transform-origin:center;animation:flap .6s ease-in-out infinite alternate}
+.hab{animation:bob 5s ease-in-out infinite}
+.owl{cursor:pointer}
+.owl-body{transform-box:fill-box;transform-origin:50% 100%}
+.owl.jump .owl-body{animation:jump .7s ease}
+.eyelid{transform-box:fill-box;transform-origin:center;animation:blink 4.5s infinite}
+.wing-o{transform-box:fill-box;transform-origin:90% 20%;animation:wave 2.4s ease-in-out infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes breathe{50%{transform:scale(1.06)}}
+@keyframes drift{from{transform:translateX(-260px)}to{transform:translateX(1260px)}}
+@keyframes fly{from{transform:translate(1100px,0)}50%{transform:translate(500px,-14px)}to{transform:translate(-200px,6px)}}
+@keyframes flap{to{transform:scaleY(-.6)}}
+@keyframes bob{50%{transform:translateY(-14px)}}
+@keyframes jump{30%{transform:translateY(-34px) rotate(-6deg)}60%{transform:translateY(0) rotate(4deg)}80%{transform:translateY(-8px)}}
+@keyframes blink{0%,92%,100%{transform:scaleY(0)}95%{transform:scaleY(1)}}
+@keyframes wave{50%{transform:rotate(-22deg)}}
+
+.hud{position:absolute;top:10px;inset-inline:max(16px,env(safe-area-inset-left,0px));display:flex;justify-content:space-between;align-items:flex-start;pointer-events:none}
+.chip{pointer-events:auto;display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.88);border:2px solid var(--card);border-radius:999px;padding:2px 14px;font-weight:800;font-size:18px;color:var(--ink);box-shadow:0 3px 0 rgba(36,65,75,.12)}
+.chip svg{width:22px;height:22px}
+button.chip{cursor:pointer}
+.bubble{position:absolute;top:12px;right:clamp(96px,16vw,190px);max-width:min(300px,52vw);background:var(--card);color:var(--ink);border:3px solid var(--lav);border-radius:20px 20px 4px 20px;padding:6px 14px;font-weight:600;font-size:16px;line-height:1.45;box-shadow:0 4px 0 rgba(36,65,75,.1);transform-origin:100% 100%;animation:pop .35s ease}
+@keyframes pop{from{transform:scale(.4);opacity:0}}
+.sky-num{position:absolute;pointer-events:none;font-weight:800;font-size:22px;color:var(--ink);background:rgba(255,255,255,.85);border:2px solid var(--butter);border-radius:999px;padding:0 12px;animation:floatAway 2s ease-out forwards}
+@keyframes floatAway{to{transform:translateY(-70px) scale(1.15);opacity:0}}
+
+/* ---------- Page ---------- */
+.wrap{max-width:980px;margin:0 auto;padding-block:20px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.panel{background:var(--card);border-radius:28px;padding:clamp(18px,4vw,34px);box-shadow:0 6px 0 var(--line)}
+h1,h2,h3{line-height:1.25;text-wrap:balance;margin:0}
+h1{font-size:clamp(30px,6vw,46px);font-weight:800}
+h2{font-size:clamp(24px,4.4vw,34px);font-weight:800}
+h3{font-size:22px;font-weight:800}
+p{margin:0}
+.lead{color:var(--muted);font-size:19px;max-width:60ch}
+.btn{cursor:pointer;border:0;border-radius:18px;padding:10px 26px;font-size:20px;font-weight:800;background:var(--mint-d);color:#fff;box-shadow:0 5px 0 #2C6A4D;transition:transform .1s}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 #2C6A4D}
+.btn.alt{background:var(--card);color:var(--ink);box-shadow:0 5px 0 var(--line);border:2px solid var(--line)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.link{background:none;border:0;color:var(--sky-d);font-size:16px;font-weight:600;cursor:pointer;text-decoration:underline}
+
+/* welcome */
+.welcome{display:grid;gap:22px;text-align:center;justify-items:center}
+.big-num{font-size:clamp(54px,12vw,96px);font-weight:800;line-height:1;color:var(--lav-d);letter-spacing:2px}
+.name-row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;width:100%}
+.name-row label{width:100%;font-size:22px;font-weight:800}
+#kidName{font-family:inherit;font-size:24px;font-weight:600;padding:8px 18px;border-radius:18px;border:3px solid var(--line);width:min(340px,100%);text-align:center;color:var(--ink);background:var(--bg)}
+#kidName:focus{border-color:var(--lav);outline:none}
+.err{color:var(--coral-d);font-weight:600}
+.goals{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.goal{background:var(--bg);border:2px dashed var(--line);border-radius:14px;padding:4px 14px;font-size:16px;color:var(--muted)}
+
+/* menu */
+.menu-head{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:baseline;justify-content:space-between;margin-bottom:20px}
+.games{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+@media (max-width:760px){.games{grid-template-columns:1fr}}
+.game-card{cursor:pointer;text-align:start;border:3px solid var(--line);border-radius:24px;background:var(--card);padding:16px;display:grid;gap:8px;align-content:start;transition:transform .15s,border-color .15s}
+.game-card:hover{transform:translateY(-4px);border-color:var(--lav)}
+.game-card .art{height:120px;border-radius:16px;display:grid;place-items:center;overflow:hidden}
+.game-card .art svg{height:100%;width:auto;max-width:100%}
+.game-card .tag{font-size:15px;color:var(--muted)}
+.stars{display:flex;gap:4px}
+.stars svg{width:26px;height:26px}
+.cert{margin-top:22px;border:4px double var(--butter-d);background:#FFF9E6;border-radius:24px;padding:22px;text-align:center;display:grid;gap:6px}
+.cert .who{font-size:clamp(28px,6vw,40px);font-weight:800;color:var(--lav-d)}
+
+/* game shell */
+.topbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;margin-bottom:16px}
+.topbar h2{flex:1;min-width:0;font-size:clamp(22px,4vw,30px)}
+.back{cursor:pointer;border:2px solid var(--line);background:var(--card);border-radius:14px;padding:4px 14px;font-size:17px;font-weight:600}
+.progress{width:100%;display:flex;align-items:center;gap:12px;font-size:16px;color:var(--muted)}
+.bar{flex:1;height:12px;background:var(--bg);border-radius:999px;overflow:hidden;border:2px solid var(--line)}
+.bar i{display:block;height:100%;background:var(--mint);border-radius:999px;transition:width .4s}
+.prompt{background:var(--bg);border-radius:22px;padding:14px 18px;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:center;text-align:center;min-height:96px}
+.prompt .q{font-size:16px;color:var(--muted);width:100%}
+.prompt .words{font-size:clamp(24px,5vw,34px);font-weight:800;color:var(--lav-d)}
+.speak{cursor:pointer;border:0;background:var(--butter);border-radius:50%;width:48px;height:48px;display:grid;place-items:center;box-shadow:0 3px 0 var(--butter-d)}
+.speak svg{width:26px;height:26px}
+.cubes{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.cube{width:64px;height:70px}
+.note{font-size:15px;color:var(--muted);width:100%}
+
+/* balloons */
+.sky-play{display:flex;justify-content:space-around;align-items:flex-end;gap:8px;min-height:250px;padding:26px 10px 14px;margin-top:14px;border-radius:24px;overflow:hidden;background:linear-gradient(#D7EEF6,#F0F8F3)}
+.balloon{position:relative;width:23%;max-width:140px;border:0;background:none;padding:0;cursor:pointer}
+.balloon:hover svg{filter:brightness(1.06)}
+.balloon .sway{display:block;animation:sway 3s ease-in-out infinite}
+.balloon svg{width:100%;height:auto;display:block;overflow:visible}
+.balloon .num{position:absolute;top:22%;inset-inline:0;text-align:center;font-weight:800;font-size:clamp(20px,4.4vw,30px);color:var(--ink)}
+.balloon.popped{pointer-events:none}
+.balloon.popped .sway{animation:burst .45s ease forwards}
+.balloon.wrong .sway{animation:shake .5s}
+.balloon.faded{opacity:.35;pointer-events:none}
+@keyframes rise{to{transform:translateY(-610px)}}
+@keyframes sway{50%{transform:translateY(-6px) rotate(2deg)}}
+@keyframes burst{40%{transform:scale(1.3)}to{transform:scale(0);opacity:0}}
+@keyframes shake{20%,60%{transform:translateX(-10px)}40%,80%{transform:translateX(10px)}}
+
+/* flip cards */
+.memo-info{display:flex;justify-content:center;gap:18px;margin:12px 0;color:var(--muted);font-size:17px}
+.memo{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:620px){.memo{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.fcard{perspective:900px;border:0;background:none;padding:0;cursor:pointer;aspect-ratio:4/5;max-width:100%}
+.fcard .in{position:relative;display:block;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.fcard.open .in,.fcard.done .in{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;border-radius:18px;display:grid;place-items:center;backface-visibility:hidden;-webkit-backface-visibility:hidden;padding:8px;text-align:center}
+.face.back{background:var(--sky);border:3px solid var(--card);box-shadow:0 4px 0 var(--line)}
+.face.back svg{width:60%;height:auto}
+.face.front{transform:rotateY(180deg);border:3px solid var(--line);background:var(--card)}
+.face.front.n{background:#EAF6EF;border-color:var(--mint)}
+.face.front.w{background:#F1EDFB;border-color:var(--lav)}
+.face.front .val{font-weight:800;font-size:clamp(26px,6vw,40px)}
+.face.front .wd{font-weight:600;font-size:clamp(14px,2.6vw,18px);line-height:1.4}
+.fcard.done .face.front{box-shadow:0 0 0 4px var(--butter)}
+.fcard.bad .in{animation:shake .5s}
+
+/* drag & drop */
+.slots{display:flex;gap:10px;justify-content:center;margin:18px 0 8px}
+.slot{width:clamp(56px,14vw,78px);height:clamp(66px,16vw,88px);border-radius:18px;border:3px dashed var(--lav);background:var(--card);display:grid;place-items:center;font-size:clamp(32px,7vw,46px);font-weight:800;cursor:pointer;transition:background .2s}
+.slot.filled{border-style:solid;background:#F1EDFB}
+.slot.ok{background:#E3F4EA;border-color:var(--mint-d)}
+.slot.no{background:#FCE7E1;border-color:var(--coral-d)}
+.over{background:#FFF6D8 !important;border-color:var(--butter-d) !important}
+.bank{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:14px}
+.tile{touch-action:none;user-select:none;cursor:grab;border:0;border-radius:16px;min-width:56px;height:60px;padding:0 12px;font-size:30px;font-weight:800;background:var(--butter);box-shadow:0 4px 0 var(--butter-d)}
+.tile.card{font-size:26px;background:var(--sky);box-shadow:0 4px 0 var(--sky-d);min-width:110px}
+.ghost{position:fixed;z-index:50;pointer-events:none;transform:scale(1.12) rotate(-4deg);opacity:.92}
+.dropbox{margin:18px auto 4px;width:min(320px,100%);min-height:96px;border:4px dashed var(--mint-d);border-radius:24px;display:grid;place-items:center;color:var(--muted);font-size:18px;font-weight:600;background:var(--card)}
+.actions{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:18px}
+.hint{text-align:center;color:var(--muted);font-size:16px;margin-top:6px}
+
+/* result */
+.overlay{position:fixed;inset:0;z-index:40;background:rgba(36,65,75,.45);display:grid;place-items:center;padding:16px}
+.result{background:var(--card);border-radius:28px;padding:26px;text-align:center;display:grid;gap:12px;width:min(420px,100%);animation:pop .4s ease}
+.result .stars{justify-content:center}
+.result .stars svg{width:52px;height:52px}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:60;width:100%;height:100%}
+
+/* credit */
+.credit{display:flex;justify-content:center;align-items:center;gap:12px;padding-block:4px 30px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.credit .by{color:var(--muted);font-size:18px;font-weight:600}
+.credit .name{display:inline-block;font-size:clamp(30px,6vw,42px);font-weight:800;line-height:1.3;background:linear-gradient(90deg,var(--lav-d),var(--coral-d),var(--mint-d),var(--sky-d),var(--lav-d));background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;animation:shine 6s linear infinite,nameBob 2.8s ease-in-out infinite}
+.credit .spark{width:24px;height:24px;animation:twinkle 1.8s ease-in-out infinite}
+.credit .spark.b{animation-delay:.9s}
+@keyframes shine{to{background-position:300% 0}}
+@keyframes nameBob{50%{transform:translateY(-6px) rotate(-2deg)}}
+@keyframes twinkle{50%{transform:scale(.55) rotate(45deg);opacity:.5}}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition:none !important}
+  .balloon .sway{animation:none !important}
+  .cloud,.birds,.rays,.hab{animation:none !important}
+}
+</style>
+</head>
+<body style="margin:0">
+
+
+<div dir="rtl" lang="ar">
+<header class="scene" id="scene">
+  <svg class="sky" id="sky" viewBox="0 0 1000 200" preserveAspectRatio="xMidYMid slice" aria-label="سماء متحركة: اضغط عليها لتظهر أعداد">
+    <defs>
+      <linearGradient id="skyg" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#BFE2F1"/><stop offset="1" stop-color="#E8F5F0"/>
+      </linearGradient>
+    </defs>
+    <rect width="1000" height="200" fill="url(#skyg)"/>
+    <!-- sun -->
+    <g class="sun" id="sun" transform="translate(90 62)">
+      <g class="rays">
+        <g stroke="#F3C55A" stroke-width="6" stroke-linecap="round">
+          <line x1="0" y1="-52" x2="0" y2="-40"/><line x1="0" y1="40" x2="0" y2="52"/>
+          <line x1="-52" y1="0" x2="-40" y2="0"/><line x1="40" y1="0" x2="52" y2="0"/>
+          <line x1="-37" y1="-37" x2="-28" y2="-28"/><line x1="28" y1="28" x2="37" y2="37"/>
+          <line x1="-37" y1="37" x2="-28" y2="28"/><line x1="28" y1="-28" x2="37" y2="-37"/>
+        </g>
+      </g>
+      <g class="sun-core">
+        <circle r="30" fill="#F8D978"/>
+        <circle cx="-10" cy="-4" r="3.5" fill="#24414B"/><circle cx="10" cy="-4" r="3.5" fill="#24414B"/>
+        <path d="M-10 8 q10 9 20 0" stroke="#24414B" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <circle cx="-18" cy="6" r="4" fill="#F4A893" opacity=".7"/><circle cx="18" cy="6" r="4" fill="#F4A893" opacity=".7"/>
+      </g>
+    </g>
+    <!-- clouds -->
+    <g class="cloud c1"><g transform="translate(0 40)" fill="#FFFFFF" opacity=".95"><ellipse cx="40" cy="20" rx="40" ry="18"/><ellipse cx="70" cy="10" rx="30" ry="22"/><ellipse cx="100" cy="22" rx="32" ry="16"/></g></g>
+    <g class="cloud c2"><g transform="translate(0 80)" fill="#FFFFFF" opacity=".85"><ellipse cx="30" cy="16" rx="30" ry="13"/><ellipse cx="55" cy="8" rx="24" ry="17"/><ellipse cx="80" cy="17" rx="26" ry="12"/></g></g>
+    <g class="cloud c3"><g transform="translate(0 20)" fill="#FFFFFF" opacity=".9"><ellipse cx="34" cy="18" rx="34" ry="14"/><ellipse cx="62" cy="9" rx="26" ry="19"/><ellipse cx="88" cy="19" rx="28" ry="13"/></g></g>
+    <!-- birds -->
+    <g class="birds">
+      <g transform="translate(0 50)" stroke="#24414B" stroke-width="3" fill="none" stroke-linecap="round">
+        <path class="wing-b" d="M0 0 q7 -8 14 0 q7 -8 14 0"/>
+        <path class="wing-b" d="M40 18 q6 -7 12 0 q6 -7 12 0" style="animation-delay:.2s"/>
+      </g>
+    </g>
+    <!-- hot air balloon -->
+    <g class="hab">
+      <g transform="translate(560 18)">
+        <path d="M40 0 C78 0 86 40 66 70 L52 88 L28 88 L14 70 C-6 40 2 0 40 0Z" fill="#F4A893"/>
+        <path d="M40 0 C56 0 60 40 52 70 L46 88 L34 88 L28 70 C20 40 24 0 40 0Z" fill="#F8E09A"/>
+        <text x="40" y="52" text-anchor="middle" font-family="Baloo Bhaijaan 2, sans-serif" font-weight="800" font-size="20" fill="#24414B">٩٩٩٩</text>
+        <line x1="30" y1="88" x2="32" y2="102" stroke="#5D7880" stroke-width="2"/><line x1="50" y1="88" x2="48" y2="102" stroke="#5D7880" stroke-width="2"/>
+        <rect x="29" y="102" width="22" height="14" rx="3" fill="#B8865A"/>
+      </g>
+    </g>
+    <!-- hills -->
+    <path d="M0 170 Q180 120 380 160 T760 150 T1000 140 L1000 200 L0 200Z" fill="#B9E0C6"/>
+    <path d="M0 185 Q260 150 520 182 T1000 170 L1000 200 L0 200Z" fill="#9ED2B6"/>
+    <!-- flowers -->
+    <g fill="#F4A893"><circle cx="300" cy="178" r="5"/><circle cx="460" cy="186" r="5"/></g>
+    <g fill="#C9BCEB"><circle cx="340" cy="184" r="5"/><circle cx="640" cy="180" r="5"/></g>
+    <!-- owl -->
+    <g class="owl" id="owl" transform="translate(880 92)" role="button" aria-label="اضغط هنا لنصيحة">
+      <g class="owl-body">
+        <rect x="-50" y="66" width="100" height="10" rx="5" fill="#8B6A4E"/>
+        <path d="M-30 -32 L-22 -54 L-12 -36Z M30 -32 L22 -54 L12 -36Z" fill="#8F7CC4"/>
+        <ellipse cx="0" cy="18" rx="40" ry="50" fill="#9C8BCF"/>
+        <ellipse cx="0" cy="32" rx="25" ry="32" fill="#EDE7FA"/>
+        <g class="wing-o"><ellipse cx="-38" cy="20" rx="12" ry="26" fill="#8573BF"/></g>
+        <ellipse cx="38" cy="20" rx="12" ry="26" fill="#8573BF"/>
+        <circle cx="-15" cy="-6" r="15" fill="#FFFFFF"/><circle cx="15" cy="-6" r="15" fill="#FFFFFF"/>
+        <circle cx="-13" cy="-5" r="7" fill="#24414B"/><circle cx="13" cy="-5" r="7" fill="#24414B"/>
+        <circle cx="-11" cy="-8" r="2.2" fill="#FFFFFF"/><circle cx="15" cy="-8" r="2.2" fill="#FFFFFF"/>
+        <g class="eyelid"><ellipse cx="-15" cy="-6" rx="16" ry="16" fill="#9C8BCF"/><ellipse cx="15" cy="-6" rx="16" ry="16" fill="#9C8BCF"/></g>
+        <path d="M-6 8 L6 8 L0 18Z" fill="#F3C55A"/>
+        <path d="M-12 66 l-4 8 M-6 66 l0 9 M6 66 l0 9 M12 66 l4 8" stroke="#F3C55A" stroke-width="3" stroke-linecap="round"/>
+        <!-- graduation cap -->
+        <path d="M-26 -40 L0 -50 L26 -40 L0 -30Z" fill="#24414B"/>
+        <line x1="20" y1="-41" x2="26" y2="-26" stroke="#F3C55A" stroke-width="2.5"/><circle cx="26" cy="-25" r="3" fill="#F3C55A"/>
+      </g>
+    </g>
+  </svg>
+  <div class="hud">
+    
+    <button class="chip" id="soundBtn" type="button" aria-pressed="true" aria-label="الصوت">
+      <svg viewBox="0 0 24 24" id="soundIcon"><path d="M4 9h4l5-4v14l-5-4H4Z" fill="#24414B"/><path d="M16 8a5 5 0 0 1 0 8M18.5 5.5a8.5 8.5 0 0 1 0 13" stroke="#24414B" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+  <div class="bubble" id="bubble" hidden></div>
+</header>
+
+<main class="wrap">
+
+  <!-- Welcome -->
+  <section id="sc-welcome" class="panel welcome">
+    <div class="big-num" aria-hidden="true">١٠٠٠ ← ٩٩٩٩</div>
+    <h1>رحلة الآلاف</h1>
+    <p class="lead">ثلاث ألعاب نتعرّف فيها على الآلاف، ونقرأ الأعداد حتى ٩٩٩٩ ونكتبها بالأرقام وبالكلمات.</p>
+    <form class="name-row" id="nameForm" novalidate>
+      <label for="kidName">ما اسمك يا صديقي؟</label>
+      <input id="kidName" name="kidName" maxlength="20" autocomplete="off" placeholder="اكتب اسمك هنا">
+      <button class="btn" type="submit">هيا نبدأ الرحلة</button>
+      <p class="err" id="nameErr" hidden style="width:100%">اكتب اسمك أولاً لنبدأ اللعب.</p>
+    </form>
+    <div class="goals" aria-label="ماذا سنتعلم">
+      <span class="goal">قيمة الألف</span><span class="goal">قراءة الأعداد</span><span class="goal">كتابة الأعداد</span><span class="goal">العدد بالرموز والكلمات</span>
+    </div>
+  </section>
+
+  <!-- Menu -->
+  <section id="sc-menu" class="panel" hidden>
+    <div class="menu-head">
+      <h2 id="hello">أهلاً بك!</h2>
+      <button class="link" id="changeName" type="button">تغيير الاسم</button>
+    </div>
+    <div class="games">
+      <button class="game-card" data-go="g1" type="button">
+        <span class="art" style="background:#E3F1F8"><svg viewBox="0 0 160 120" aria-hidden="true"><g><ellipse cx="50" cy="45" rx="26" ry="32" fill="#F4A893"/><path d="M50 77 q-4 20 4 36" stroke="#5D7880" stroke-width="2" fill="none"/><text x="50" y="52" text-anchor="middle" font-size="16" font-weight="800" fill="#24414B" font-family="Baloo Bhaijaan 2, sans-serif">٣٠٠٠</text></g><g><ellipse cx="110" cy="38" rx="26" ry="32" fill="#C9BCEB"/><path d="M110 70 q4 20 -4 40" stroke="#5D7880" stroke-width="2" fill="none"/><text x="110" y="45" text-anchor="middle" font-size="16" font-weight="800" fill="#24414B" font-family="Baloo Bhaijaan 2, sans-serif">٥٢٠٤</text></g></svg></span>
+        <h3>فرقعة البالونات</h3>
+        <span class="tag">اقرأ العدد واضغط على البالون الصحيح</span>
+        <span class="stars" data-stars="g1"></span>
+      </button>
+      <button class="game-card" data-go="g2" type="button">
+        <span class="art" style="background:#EFEAF9"><svg viewBox="0 0 160 120" aria-hidden="true"><rect x="22" y="18" width="52" height="70" rx="10" fill="#AFDAEC"/><text x="48" y="60" text-anchor="middle" font-size="26" font-weight="800" fill="#24414B" font-family="Baloo Bhaijaan 2, sans-serif">؟</text><g transform="rotate(8 112 54)"><rect x="86" y="18" width="52" height="70" rx="10" fill="#EAF6EF" stroke="#A6D8BD" stroke-width="3"/><text x="112" y="58" text-anchor="middle" font-size="15" font-weight="800" fill="#24414B" font-family="Baloo Bhaijaan 2, sans-serif">٤٠٠٠</text></g></svg></span>
+        <h3>البطاقات القلّابة</h3>
+        <span class="tag">اقلب بطاقتين: العدد واسمه بالكلمات</span>
+        <span class="stars" data-stars="g2"></span>
+      </button>
+      <button class="game-card" data-go="g3" type="button">
+        <span class="art" style="background:#FBF2D9"><svg viewBox="0 0 160 120" aria-hidden="true"><g font-family="Baloo Bhaijaan 2, sans-serif" font-weight="800" font-size="22" text-anchor="middle" fill="#24414B"><rect x="14" y="20" width="30" height="38" rx="8" fill="#FFFFFF" stroke="#C9BCEB" stroke-width="3"/><text x="29" y="47">٧</text><rect x="50" y="20" width="30" height="38" rx="8" fill="#FFFFFF" stroke="#C9BCEB" stroke-width="3"/><text x="65" y="47">٠</text><rect x="86" y="20" width="30" height="38" rx="8" fill="#FFFFFF" stroke="#C9BCEB" stroke-width="3" stroke-dasharray="5 4"/><rect x="122" y="20" width="30" height="38" rx="8" fill="#FFFFFF" stroke="#C9BCEB" stroke-width="3" stroke-dasharray="5 4"/><rect x="70" y="74" width="34" height="34" rx="8" fill="#F8E09A"/><text x="87" y="99">٥</text></g><path d="M104 80 q20 -10 14 -26" stroke="#3C86A6" stroke-width="3" fill="none" stroke-dasharray="4 4"/></svg></span>
+        <h3>اسحب واكتب</h3>
+        <span class="tag">اسحب الأرقام لتكتب العدد</span>
+        <span class="stars" data-stars="g3"></span>
+      </button>
+    </div>
+    <div class="cert" id="cert" hidden>
+      <span style="font-size:18px;color:var(--muted)">شهادة بطل الآلاف</span>
+      <span class="who" id="certName"></span>
+      <span id="certText"></span>
+    </div>
+  </section>
+
+  <!-- Game 1 -->
+  <section id="sc-g1" class="panel" hidden>
+    <div class="topbar">
+      <button class="back" type="button" data-back>→ القائمة</button>
+      <h2>فرقعة البالونات</h2>
+      <div class="progress"><span id="g1-count"></span><span class="bar"><i id="g1-bar"></i></span></div>
+    </div>
+    <div class="prompt" id="g1-prompt"></div>
+    <div class="sky-play" id="g1-sky" aria-label="بالونات طائرة"></div>
+  </section>
+
+  <!-- Game 2 -->
+  <section id="sc-g2" class="panel" hidden>
+    <div class="topbar">
+      <button class="back" type="button" data-back>→ القائمة</button>
+      <h2>البطاقات القلّابة</h2>
+      <div class="progress"><span id="g2-count"></span><span class="bar"><i id="g2-bar"></i></span></div>
+    </div>
+    <p class="hint">اقلب بطاقتين. إذا كان العدد واسمه بالكلمات متطابقين تبقى البطاقتان مفتوحتين.</p>
+    <div class="memo-info"><span>المحاولات: <b id="g2-moves">٠</b></span></div>
+    <div class="memo" id="g2-grid"></div>
+  </section>
+
+  <!-- Game 3 -->
+  <section id="sc-g3" class="panel" hidden>
+    <div class="topbar">
+      <button class="back" type="button" data-back>→ القائمة</button>
+      <h2>اسحب واكتب</h2>
+      <div class="progress"><span id="g3-count"></span><span class="bar"><i id="g3-bar"></i></span></div>
+    </div>
+    <div class="prompt" id="g3-prompt"></div>
+    <div id="g3-area"></div>
+  </section>
+</main>
+
+<footer class="credit">
+  <svg class="spark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1 L14.5 9.5 L23 12 L14.5 14.5 L12 23 L9.5 14.5 L1 12 L9.5 9.5Z" fill="#F3C55A"/></svg>
+  <span class="by">إعداد</span>
+  <span class="name">أ. ريم</span>
+  <svg class="spark b" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1 L14.5 9.5 L23 12 L14.5 14.5 L12 23 L9.5 14.5 L1 12 L9.5 9.5Z" fill="#C9BCEB"/></svg>
+</footer>
+
+<div class="overlay" id="overlay" hidden>
+  <div class="result" role="dialog" aria-modal="true" aria-labelledby="resTitle">
+    <div class="stars" id="resStars"></div>
+    <h2 id="resTitle"></h2>
+    <p id="resText" class="lead" style="margin:0 auto"></p>
+    <div class="actions">
+      <button class="btn" id="resNext" type="button">اللعبة التالية</button>
+      <button class="btn alt" id="resAgain" type="button">العب مرة أخرى</button>
+    </div>
+  </div>
+</div>
+<canvas id="confetti"></canvas>
+</div>
+
+<script>
+(function(){
+document.documentElement.lang='ar';document.documentElement.dir='rtl';
+const $=s=>document.querySelector(s);
+const AR='٠١٢٣٤٥٦٧٨٩';
+const ar=v=>String(v).replace(/\d/g,d=>AR[d]);
+const rand=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+
+/* ---------- number → Arabic words (1..9999) ---------- */
+const U=['','واحد','اثنان','ثلاثة','أربعة','خمسة','ستة','سبعة','ثمانية','تسعة'];
+const T=['','عشرة','عشرون','ثلاثون','أربعون','خمسون','ستون','سبعون','ثمانون','تسعون'];
+const H=['','مئة','مئتان','ثلاثمئة','أربعمئة','خمسمئة','ستمئة','سبعمئة','ثمانمئة','تسعمئة'];
+function below100(n){
+  if(n===0)return'';
+  if(n<10)return U[n];
+  if(n===10)return'عشرة';
+  if(n===11)return'أحد عشر';
+  if(n===12)return'اثنا عشر';
+  if(n<20)return U[n-10]+' عشر';
+  const t=Math.floor(n/10),u=n%10;
+  return u?U[u]+' و'+T[t]:T[t];
+}
+function words(n){
+  const th=Math.floor(n/1000),h=Math.floor(n%1000/100),r=n%100,parts=[];
+  if(th===1)parts.push('ألف');else if(th===2)parts.push('ألفان');else if(th>2)parts.push(U[th]+' آلاف');
+  if(h)parts.push(H[h]);
+  if(r)parts.push(below100(r));
+  return parts.join(' و');
+}
+const thWords=k=>words(k*1000);
+
+/* ---------- state ---------- */
+const S={name:'',stars:{g1:0,g2:0,g3:0},sound:true};
+function save(){try{localStorage.setItem('thousands-game',JSON.stringify(S));}catch(e){}}
+function load(d){
+  let o=d&&d.name?d:null;
+  if(!o){try{o=JSON.parse(localStorage.getItem('thousands-game')||'null');}catch(e){o=null;}}
+  if(o){S.name=o.name||'';Object.assign(S.stars,o.stars||{});S.sound=o.sound!==false;}
+}
+
+/* ---------- sound ---------- */
+let ctx=null;
+function tone(f,d,type,when){
+  if(!S.sound)return;
+  try{
+    ctx=ctx||new (window.AudioContext||window.webkitAudioContext)();
+    const t=ctx.currentTime+(when||0),o=ctx.createOscillator(),g=ctx.createGain();
+    o.type=type||'sine';o.frequency.setValueAtTime(f,t);
+    g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.22,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+d);
+    o.connect(g).connect(ctx.destination);o.start(t);o.stop(t+d+.05);
+  }catch(e){}
+}
+function cheer(){
+  if(!S.sound)return;
+  try{
+    ctx=ctx||new (window.AudioContext||window.webkitAudioContext)();
+    const t=ctx.currentTime,out=ctx.createGain();out.gain.value=.5;out.connect(ctx.destination);
+    const bell=(f,at,len,vol)=>{
+      [[1,1],[2,.25],[3,.08]].forEach(([m,v])=>{
+        const o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';o.frequency.value=f*m;
+        g.gain.setValueAtTime(.0001,t+at);g.gain.exponentialRampToValueAtTime(vol*v,t+at+.012);g.gain.exponentialRampToValueAtTime(.0001,t+at+len);
+        o.connect(g).connect(out);o.start(t+at);o.stop(t+at+len+.05);
+      });
+    };
+    [523.25,659.25,783.99,1046.5].forEach((f,i)=>bell(f,i*.09,.5,.35));
+    bell(1318.5,.38,.9,.3);bell(1046.5,.38,.9,.2);
+    [2093,2349,2637,3136,2637,3520].forEach((f,i)=>bell(f,.5+i*.06,.25,.07));
+  }catch(e){}
+}
+const sfx={
+  good(){cheer();},
+  bad(){tone(150,.16,'square');tone(110,.34,'square',.2);},
+  pop(){tone(880,.08,'square');tone(1320,.06,'square',.04);},
+  flip(){tone(600,.07,'sine');},
+  win(){[523,659,784,1047].forEach((f,i)=>tone(f,.25,'triangle',i*.14));}
+};
+function speak(text){
+  try{
+    if(!('speechSynthesis' in window))return;
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);u.lang='ar-SA';u.rate=.8;
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+const canSpeak='speechSynthesis' in window;
+
+/* ---------- UI helpers ---------- */
+const STAR='<svg viewBox="0 0 24 24"><path d="M12 2l3 6.6 7.2.8-5.4 4.9 1.5 7.1L12 17.8 5.7 21.4l1.5-7.1L1.8 9.4 9 8.6Z" fill="FILL" stroke="STROKE" stroke-width="1.2"/></svg>';
+const starRow=n=>[1,2,3].map(i=>STAR.replace('FILL',i<=n?'#F3C55A':'#E4ECE9').replace('STROKE',i<=n?'#B88A1C':'#C9D6D2')).join('');
+function refreshStars(){
+  const tot=S.stars.g1+S.stars.g2+S.stars.g3;
+  document.querySelectorAll('[data-stars]').forEach(el=>{el.innerHTML=starRow(S.stars[el.dataset.stars]);});
+  const done=S.stars.g1&&S.stars.g2&&S.stars.g3;
+  $('#cert').hidden=!done;
+  if(done){$('#certName').textContent=S.name;$('#certText').textContent='أنهيت الألعاب الثلاث وجمعت '+ar(tot)+' نجمة من '+ar(9)+'. أنت تعرف الآلاف جيداً!';}
+}
+let bubbleTimer=0;
+function say(msg,ms){
+  const b=$('#bubble');b.textContent=msg;b.hidden=false;
+  b.style.animation='none';void b.offsetWidth;b.style.animation='';
+  clearTimeout(bubbleTimer);bubbleTimer=setTimeout(()=>{b.hidden=true;},ms||3200);
+}
+const nm=()=>S.name||'صديقي';
+const PRAISE=[n=>'رائع يا '+n+'!',n=>'إجابة صحيحة يا '+n+'!',n=>'ممتاز يا '+n+'، استمر!',n=>'برافو يا '+n+'!',n=>'أنت بطل الأعداد يا '+n+'!'];
+const TRY=[n=>'قريب جداً يا '+n+'، لنحاول مرة أخرى.',n=>'لا بأس يا '+n+'، اقرأ العدد بهدوء وحاول من جديد.',n=>'فكّر قليلاً يا '+n+'، أنت تستطيع!'];
+const pick=a=>a[Math.floor(Math.random()*a.length)](nm());
+
+function show(id){
+  ['welcome','menu','g1','g2','g3'].forEach(s=>{$('#sc-'+s).hidden=(s!==id);});
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* confetti */
+const cv=$('#confetti'),cx=cv.getContext('2d');let parts=[],raf=0;
+function confetti(n){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  cv.width=innerWidth;cv.height=innerHeight;
+  const cols=['#F4A893','#A6D8BD','#F8E09A','#C9BCEB','#AFDAEC'];
+  for(let i=0;i<(n||70);i++)parts.push({x:innerWidth/2+rand(-120,120),y:innerHeight*.35,vx:(Math.random()-.5)*12,vy:-Math.random()*11-3,s:rand(6,12),c:cols[i%5],r:Math.random()*6,life:110});
+  if(!raf)loop();
+}
+function loop(){
+  cx.clearRect(0,0,cv.width,cv.height);
+  parts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.35;p.r+=.2;p.life--;cx.save();cx.translate(p.x,p.y);cx.rotate(p.r);cx.fillStyle=p.c;cx.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);cx.restore();});
+  parts=parts.filter(p=>p.life>0&&p.y<cv.height+20);
+  raf=parts.length?requestAnimationFrame(loop):(cx.clearRect(0,0,cv.width,cv.height),0);
+}
+
+/* ---------- sky interactions ---------- */
+$('#owl').addEventListener('click',e=>{
+  e.stopPropagation();const o=$('#owl');o.classList.remove('jump');void o.getBoundingClientRect();o.classList.add('jump');
+  sfx.pop();
+  const tips=[
+    'مرحباً يا '+nm()+'! بعد ٩٩٩ يأتي العدد ١٠٠٠ (ألف).',
+    'هل تعلم يا '+nm()+'؟ أكبر عدد في رحلتنا هو ٩٩٩٩.',
+    'الألف يُكتب ١٠٠٠، وألفان يُكتبان ٢٠٠٠.',
+    'اضغط على السماء يا '+nm()+' لترى أعداداً تطير!',
+    'خمسة آلاف تُكتب ٥٠٠٠.'
+  ];
+  say(tips[rand(0,tips.length-1)],4200);
+});
+$('#sun').addEventListener('click',e=>{e.stopPropagation();const s=$('#sun');s.classList.add('spin');sfx.flip();setTimeout(()=>s.classList.remove('spin'),2400);});
+$('#sky').addEventListener('click',e=>{
+  const sc=$('#scene').getBoundingClientRect(),n=rand(1000,9999),el=document.createElement('span');
+  el.className='sky-num';el.textContent=ar(n);
+  el.style.left=Math.min(Math.max(e.clientX-sc.left-40,4),sc.width-110)+'px';el.style.top=Math.max(e.clientY-sc.top-20,4)+'px';
+  $('#scene').appendChild(el);sfx.pop();setTimeout(()=>el.remove(),2000);
+});
+$('#soundBtn').addEventListener('click',()=>{
+  S.sound=!S.sound;save();$('#soundBtn').setAttribute('aria-pressed',S.sound);
+  $('#soundIcon').style.opacity=S.sound?1:.35;if(S.sound)sfx.flip();
+});
+
+/* ---------- welcome & menu ---------- */
+$('#nameForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const v=$('#kidName').value.trim();
+  if(!v){$('#nameErr').hidden=false;$('#kidName').focus();return;}
+  $('#nameErr').hidden=true;S.name=v;save();goMenu(true);
+});
+function goMenu(first){
+  $('#hello').textContent='أهلاً يا '+S.name+'! اختر لعبتك';
+  refreshStars();show('menu');
+  if(first){sfx.win();say('أهلاً وسهلاً يا '+S.name+'! اختر لعبة لنبدأ.',4200);}
+}
+$('#changeName').addEventListener('click',()=>{$('#kidName').value=S.name;show('welcome');$('#kidName').focus();});
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>start(b.dataset.go)));
+document.querySelectorAll('[data-back]').forEach(b=>b.addEventListener('click',()=>{stopAll();goMenu();}));
+function start(g){stopAll();({g1:startG1,g2:startG2,g3:startG3})[g]();}
+function stopAll(){$('#g1-sky').innerHTML='';try{speechSynthesis.cancel();}catch(e){}}
+
+function progress(g,i,n){$('#'+g+'-count').textContent='السؤال '+ar(Math.min(i+1,n))+' من '+ar(n);$('#'+g+'-bar').style.width=(i/n*100)+'%';}
+function speakBtn(text){
+  if(!canSpeak)return'';
+  return '<button class="speak" type="button" data-say="'+text+'" aria-label="استمع إلى العدد"><svg viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4Z" fill="#24414B"/><path d="M16 8a5 5 0 0 1 0 8" stroke="#24414B" stroke-width="2" fill="none" stroke-linecap="round"/></svg></button>';
+}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-say]');if(b)speak(b.dataset.say);});
+
+function cubeSVG(){
+  return '<svg class="cube" viewBox="0 0 64 70" aria-hidden="true"><path d="M32 4 L60 18 L32 32 L4 18Z" fill="#E7DFFA" stroke="#6E5BAE" stroke-width="2"/><path d="M4 18 L32 32 L32 66 L4 52Z" fill="#C9BCEB" stroke="#6E5BAE" stroke-width="2"/><path d="M60 18 L32 32 L32 66 L60 52Z" fill="#B2A2E2" stroke="#6E5BAE" stroke-width="2"/><g stroke="#6E5BAE" stroke-width=".8" opacity=".55"><path d="M4 29 L32 43 M4 40 L32 54 M60 29 L32 43 M60 40 L32 54 M13 22 L13 56 M22 27 L22 61 M51 22 L51 56 M42 27 L42 61"/></g><text x="18" y="46" font-size="10" font-weight="800" fill="#24414B" font-family="Baloo Bhaijaan 2, sans-serif" text-anchor="middle">١٠٠٠</text></svg>';
+}
+function cubesHTML(k){return '<div class="cubes">'+Array.from({length:k},cubeSVG).join('')+'</div><p class="note">كل مكعب كبير فيه ألف (١٠٠٠)</p>';}
+
+function niceNumber(){
+  const d=[rand(1,9)];
+  for(let i=0;i<3;i++)d.push(Math.random()<.22?0:rand(1,9));
+  return +d.join('');
+}
+function variants(n){
+  const d=String(n).split(''),set=new Set();
+  [[1,2],[2,3],[1,3],[0,1],[0,2],[0,3]].forEach(([i,j])=>{const c=d.slice();[c[i],c[j]]=[c[j],c[i]];if(c[0]!=='0'){const v=+c.join('');if(v!==n)set.add(v);}});
+  let out=shuffle([...set]);
+  while(out.length<3){const v=n+rand(-900,900);if(v>=1000&&v<=9999&&v!==n&&!out.includes(v))out.push(v);}
+  return out.slice(0,3);
+}
+
+/* ---------- result overlay ---------- */
+let after=null;
+function finish(g,stars){
+  S.stars[g]=Math.max(S.stars[g],stars);save();refreshStars();
+  $('#resStars').innerHTML=starRow(stars);
+  $('#resTitle').textContent=stars===3?'مذهل يا '+nm()+'!':stars===2?'عمل رائع يا '+nm()+'!':'أحسنت المحاولة يا '+nm()+'!';
+  $('#resText').textContent=stars===3?'حصلت على ثلاث نجوم كاملة.':'حصلت على '+ar(stars)+' '+(stars===1?'نجمة':'نجمتين')+'. العب مرة أخرى لتجمع ثلاث نجوم!';
+  const next={g1:'g2',g2:'g3',g3:null}[g];
+  $('#resNext').textContent=next?'اللعبة التالية':'العودة إلى القائمة';
+  after={g,next};
+  $('#overlay').hidden=false;sfx.win();confetti(140);$('#resNext').focus();
+}
+$('#resAgain').addEventListener('click',()=>{$('#overlay').hidden=true;start(after.g);});
+$('#resNext').addEventListener('click',()=>{$('#overlay').hidden=true;if(after.next)start(after.next);else{stopAll();goMenu();}});
+
+/* ================= GAME 1: balloons ================= */
+const G1={rounds:[],i:0,miss:0,lock:false};
+const BCOL=[['#F4A893','#C9604A'],['#C9BCEB','#6E5BAE'],['#A6D8BD','#3F8F6A'],['#F8E09A','#B88A1C'],['#AFDAEC','#3C86A6']];
+function startG1(){
+  const ks=shuffle([2,3,4,5,6,7,8,9]);
+  const r=[];
+  r.push({type:'cubes',n:ks[0]*1000,opts:[ks[0]*1000,ks[0]*100,ks[0]*10,(ks[0]===9?8:ks[0]+1)*1000]});
+  r.push({type:'th',n:ks[1]*1000,opts:[ks[1]*1000,ks[1]*100,1000,(ks[1]===2?3:ks[1]-1)*1000]});
+  r.push({type:'cubes',n:ks[2]*1000,opts:[ks[2]*1000,ks[2]*100,(ks[2]+ (ks[2]>5?-2:2))*1000,ks[2]]});
+  for(let i=0;i<5;i++){const n=niceNumber();r.push({type:'w',n,opts:[n,...variants(n)]});}
+  G1.rounds=r;G1.i=0;G1.miss=0;show('g1');renderG1();
+  say('اقرأ العدد يا '+nm()+' ثم اضغط على البالون الذي يحمله.',3800);
+}
+function renderG1(){
+  const r=G1.rounds[G1.i];G1.lock=false;progress('g1',G1.i,G1.rounds.length);
+  const p=$('#g1-prompt');
+  if(r.type==='cubes')p.innerHTML='<p class="q">كم عدد هذه المكعبات معاً؟ اضغط على البالون الصحيح.</p>'+cubesHTML(r.n/1000);
+  else p.innerHTML='<p class="q">اضغط على البالون الذي يحمل هذا العدد:</p><span class="words">'+words(r.n)+'</span>'+speakBtn(words(r.n));
+  const sky=$('#g1-sky');sky.innerHTML='';
+  const opts=shuffle([...new Set(r.opts)]);
+  opts.forEach((v,idx)=>{
+    const [c,d]=BCOL[(G1.i+idx)%BCOL.length];
+    const b=document.createElement('button');b.type='button';b.className='balloon';
+    b.setAttribute('aria-label','بالون العدد '+ar(v));
+    b.innerHTML='<span class="sway" style="animation-delay:-'+(idx*.7)+'s"><svg viewBox="0 0 100 160"><path d="M50 4 C82 4 96 30 96 56 C96 88 70 108 54 114 L50 114 L46 114 C30 108 4 88 4 56 C4 30 18 4 50 4Z" fill="'+c+'" stroke="'+d+'" stroke-width="3"/><ellipse cx="30" cy="34" rx="9" ry="15" fill="#FFFFFF" opacity=".5"/><path d="M44 114 L56 114 L50 122Z" fill="'+d+'"/><path d="M50 122 q-8 12 0 22 q8 10 0 16" stroke="#5D7880" stroke-width="2" fill="none"/></svg><span class="num">'+ar(v)+'</span></span>';
+    b.addEventListener('click',()=>pickG1(b,v));
+    sky.appendChild(b);
+  });
+}
+function pickG1(b,v){
+  if(G1.lock)return;const r=G1.rounds[G1.i];
+  if(v===r.n){
+    G1.lock=true;b.classList.add('popped');sfx.pop();setTimeout(sfx.good,120);confetti(50);
+    say(pick(PRAISE)+' '+ar(r.n)+' = '+words(r.n),2600);
+    setTimeout(()=>{G1.i++;if(G1.i<G1.rounds.length)renderG1();else{progress('g1',G1.i,G1.rounds.length);finish('g1',G1.miss<=1?3:G1.miss<=4?2:1);}},1500);
+  }else{
+    G1.miss++;sfx.bad();b.classList.add('wrong');say(pick(TRY));
+    setTimeout(()=>{b.classList.remove('wrong');b.classList.add('faded');},500);
+  }
+}
+
+/* ================= GAME 2: flip cards ================= */
+const G2={open:[],matched:0,moves:0,miss:0,lock:false,pairs:6};
+function startG2(){
+  const ks=shuffle([2,3,4,5,6,7,8,9]);
+  const nums=new Set([1000,ks[0]*1000,ks[1]*1000]);
+  while(nums.size<6)nums.add(niceNumber());
+  const cards=[];
+  [...nums].forEach((n,i)=>{cards.push({id:i,kind:'n',n});cards.push({id:i,kind:'w',n});});
+  Object.assign(G2,{open:[],matched:0,moves:0,miss:0,lock:false});
+  const grid=$('#g2-grid');grid.innerHTML='';
+  shuffle(cards).forEach(c=>{
+    const b=document.createElement('button');b.type='button';b.className='fcard';b.dataset.id=c.id;
+    b.setAttribute('aria-label','بطاقة مقلوبة');
+    const front=c.kind==='n'?'<span class="val">'+ar(c.n)+'</span>':'<span class="wd">'+words(c.n)+'</span>';
+    b.innerHTML='<span class="in"><span class="face back"><svg viewBox="0 0 60 60" aria-hidden="true"><circle cx="30" cy="30" r="26" fill="#FFFFFF" opacity=".7"/><text x="30" y="42" text-anchor="middle" font-size="34" font-weight="800" fill="#3C86A6" font-family="Baloo Bhaijaan 2, sans-serif">؟</text></svg></span><span class="face front '+c.kind+'">'+front+'</span></span>';
+    b._c=c;b.addEventListener('click',()=>flipG2(b));grid.appendChild(b);
+  });
+  $('#g2-moves').textContent='٠';updG2();show('g2');
+  say('اقلب بطاقتين يا '+nm()+': ابحث عن العدد واسمه بالكلمات.',3800);
+}
+function updG2(){$('#g2-count').textContent='الأزواج: '+ar(G2.matched)+' من '+ar(G2.pairs);$('#g2-bar').style.width=(G2.matched/G2.pairs*100)+'%';}
+function flipG2(b){
+  if(G2.lock||b.classList.contains('open')||b.classList.contains('done'))return;
+  sfx.flip();b.classList.add('open');b.setAttribute('aria-label',b._c.kind==='n'?ar(b._c.n):words(b._c.n));
+  G2.open.push(b);
+  if(G2.open.length<2)return;
+  G2.moves++;$('#g2-moves').textContent=ar(G2.moves);
+  const [a,c]=G2.open;G2.lock=true;
+  if(a._c.id===c._c.id){
+    setTimeout(()=>{a.classList.add('done');c.classList.add('done');a.classList.remove('open');c.classList.remove('open');
+      G2.matched++;updG2();sfx.good();confetti(40);say(pick(PRAISE)+' '+ar(a._c.n)+' = '+words(a._c.n),2600);
+      G2.open=[];G2.lock=false;
+      if(G2.matched===G2.pairs)setTimeout(()=>finish('g2',G2.miss<=3?3:G2.miss<=7?2:1),900);
+    },450);
+  }else{
+    G2.miss++;
+    setTimeout(()=>{a.classList.add('bad');c.classList.add('bad');sfx.bad();},500);
+    setTimeout(()=>{[a,c].forEach(x=>{x.classList.remove('open','bad');x.setAttribute('aria-label','بطاقة مقلوبة');});G2.open=[];G2.lock=false;},1300);
+  }
+}
+
+/* ================= GAME 3: drag & drop ================= */
+const G3={rounds:[],i:0,miss:0,slots:[],lock:false};
+function startG3(){
+  const ks=shuffle([2,3,4,5,6,7,8,9]);
+  const pool=[];while(pool.length<4){const n=niceNumber();if(!pool.includes(n))pool.push(n);}
+  if(!pool.some(n=>String(n).includes('0')))pool[1]=pool[1]-pool[1]%100+rand(1,9);
+  G3.rounds=[{type:'write',n:pool[0]},{type:'write',n:pool[1]},{type:'match',k:ks[0]},{type:'write',n:pool[2]},{type:'match',k:ks[1]},{type:'write',n:pool[3]}];
+  G3.i=0;G3.miss=0;show('g3');renderG3();
+  say('اسحب البطاقات بإصبعك يا '+nm()+'، أو اضغط عليها.',3800);
+}
+function renderG3(){
+  const r=G3.rounds[G3.i];G3.lock=false;progress('g3',G3.i,G3.rounds.length);
+  const p=$('#g3-prompt'),area=$('#g3-area');
+  if(r.type==='write'){
+    p.innerHTML='<p class="q">اكتب هذا العدد بالأرقام:</p><span class="words">'+words(r.n)+'</span>'+speakBtn(words(r.n));
+    G3.slots=[null,null,null,null];
+    area.innerHTML='<div class="slots" dir="ltr">'+[0,1,2,3].map(i=>'<button type="button" class="slot" data-drop="slot" data-i="'+i+'" aria-label="خانة فارغة"></button>').join('')+'</div>'+
+      '<p class="hint">اسحب الأرقام إلى الخانات. اضغط على خانة لتفريغها.</p>'+
+      '<div class="bank" dir="ltr">'+[0,1,2,3,4,5,6,7,8,9].map(d=>'<button type="button" class="tile" data-d="'+d+'">'+AR[d]+'</button>').join('')+'</div>'+
+      '<div class="actions"><button class="btn" id="g3check" type="button" disabled>تحقّق من إجابتي</button></div>';
+    area.querySelectorAll('.tile').forEach(t=>dragify(t,{d:+t.dataset.d},()=>placeDigit(+t.dataset.d,null)));
+    area.querySelectorAll('.slot').forEach(s=>s.addEventListener('click',()=>{if(G3.lock)return;G3.slots[+s.dataset.i]=null;drawSlots();}));
+    $('#g3check').addEventListener('click',checkWrite);
+  }else{
+    const k=r.k;
+    p.innerHTML='<p class="q">اسحب البطاقة التي تدل على عدد المكعبات إلى الصندوق:</p>'+cubesHTML(k);
+    const opts=shuffle([k*1000,k*100,k*10,(k===9?8:k+1)*1000]);
+    area.innerHTML='<div class="dropbox" data-drop="box" id="g3box">ضع البطاقة هنا</div>'+
+      '<div class="bank" dir="ltr">'+opts.map(v=>'<button type="button" class="tile card" data-v="'+v+'">'+ar(v)+'</button>').join('')+'</div>'+
+      '<p class="hint">يمكنك أيضاً الضغط على البطاقة.</p>';
+    area.querySelectorAll('.tile').forEach(t=>dragify(t,{v:+t.dataset.v,el:t},()=>dropMatch(+t.dataset.v,t)));
+  }
+}
+function drawSlots(){
+  document.querySelectorAll('#g3-area .slot').forEach((s,i)=>{
+    const v=G3.slots[i];s.textContent=v===null?'':AR[v];s.classList.toggle('filled',v!==null);s.classList.remove('ok','no');
+    s.setAttribute('aria-label',v===null?'خانة فارغة':'الرقم '+AR[v]);
+  });
+  const c=$('#g3check');if(c)c.disabled=G3.slots.includes(null);
+}
+function placeDigit(d,i){
+  if(G3.lock)return;
+  if(i===null){i=G3.slots.indexOf(null);if(i<0)return;}
+  G3.slots[i]=d;sfx.flip();drawSlots();
+}
+function checkWrite(){
+  const r=G3.rounds[G3.i],want=String(r.n).split('').map(Number);
+  const slots=document.querySelectorAll('#g3-area .slot');let ok=true;
+  want.forEach((d,i)=>{const good=G3.slots[i]===d;slots[i].classList.add(good?'ok':'no');if(!good)ok=false;});
+  if(ok){
+    G3.lock=true;sfx.good();confetti(60);say(pick(PRAISE)+' '+words(r.n)+' تُكتب '+ar(r.n),2800);
+    setTimeout(nextG3,1700);
+  }else{
+    G3.miss++;sfx.bad();say(pick(TRY));
+    setTimeout(()=>{want.forEach((d,i)=>{if(G3.slots[i]!==d)G3.slots[i]=null;});drawSlots();},900);
+  }
+}
+function dropMatch(v,tile){
+  if(G3.lock)return;const r=G3.rounds[G3.i],box=$('#g3box');
+  if(v===r.k*1000){
+    G3.lock=true;box.innerHTML='<span style="font-size:34px;font-weight:800;color:var(--ink)">'+ar(v)+'</span>';box.style.borderStyle='solid';box.style.background='#E3F4EA';
+    tile.style.visibility='hidden';sfx.good();confetti(60);say(pick(PRAISE)+' '+ar(r.k)+' مكعبات = '+thWords(r.k),2800);
+    setTimeout(nextG3,1700);
+  }else{
+    G3.miss++;sfx.bad();tile.style.animation='shake .5s';setTimeout(()=>tile.style.animation='',500);say(pick(TRY));
+  }
+}
+function nextG3(){G3.i++;if(G3.i<G3.rounds.length)renderG3();else{progress('g3',G3.i,G3.rounds.length);finish('g3',G3.miss<=1?3:G3.miss<=4?2:1);}}
+
+/* pointer-based drag (mouse + touch) with tap fallback */
+function dragify(el,payload,onTap){
+  el.addEventListener('click',()=>{if(el._dragged){el._dragged=false;return;}onTap();});
+  el.addEventListener('pointerdown',e=>{
+    if(e.button>0||G3.lock)return;
+    const sx=e.clientX,sy=e.clientY;let ghost=null,over=null;
+    const move=ev=>{
+      if(!ghost&&Math.hypot(ev.clientX-sx,ev.clientY-sy)>8){
+        const r=el.getBoundingClientRect();ghost=el.cloneNode(true);ghost.classList.add('ghost');
+        ghost.style.width=r.width+'px';ghost.style.height=r.height+'px';document.body.appendChild(ghost);
+      }
+      if(!ghost)return;
+      ev.preventDefault();
+      ghost.style.left=(ev.clientX-ghost.offsetWidth/2)+'px';ghost.style.top=(ev.clientY-ghost.offsetHeight/2)+'px';
+      const t=document.elementFromPoint(ev.clientX,ev.clientY);const tgt=t&&t.closest('[data-drop]');
+      if(over&&over!==tgt)over.classList.remove('over');if(tgt)tgt.classList.add('over');over=tgt;
+    };
+    const end=ev=>{
+      window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',end);window.removeEventListener('pointercancel',end);
+      if(over)over.classList.remove('over');
+      if(!ghost)return;
+      ghost.remove();el._dragged=true;setTimeout(()=>{el._dragged=false;},50);
+      if(ev.type==='pointercancel')return;
+      const t=document.elementFromPoint(ev.clientX,ev.clientY);const tgt=t&&t.closest('[data-drop]');
+      if(!tgt)return;
+      if(tgt.dataset.drop==='slot')placeDigit(payload.d,+tgt.dataset.i);
+      else if(tgt.dataset.drop==='box')dropMatch(payload.v,payload.el);
+    };
+    window.addEventListener('pointermove',move,{passive:false});window.addEventListener('pointerup',end);window.addEventListener('pointercancel',end);
+  });
+}
+
+/* ---------- boot ---------- */
+function boot(data){
+  load(data);
+  $('#soundBtn').setAttribute('aria-pressed',S.sound);$('#soundIcon').style.opacity=S.sound?1:.35;
+  refreshStars();
+  if(S.name){$('#kidName').value=S.name;goMenu(false);say('أهلاً بعودتك يا '+S.name+'!',3000);}
+  else{show('welcome');setTimeout(()=>say('مرحباً! اكتب اسمك لنبدأ الرحلة.',4200),600);}
+}
+try{window.claude&&window.claude.hot&&window.claude.hot.snapshot&&window.claude.hot.snapshot(()=>({name:S.name,stars:S.stars,sound:S.sound}));}catch(e){}
+if(window.claude&&window.claude.hot&&window.claude.hot.ready)window.claude.hot.ready(boot);
+else boot((window.claude&&window.claude.hot&&window.claude.hot.data)||{});
+})();
+</script>
+
+</body>
+</html>
