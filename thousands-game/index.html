@@ -488,7 +488,7 @@ function refreshStars(){
   document.querySelectorAll('[data-stars]').forEach(el=>{el.innerHTML=starRow(S.stars[el.dataset.stars]);});
   const done=S.stars.g1&&S.stars.g2&&S.stars.g3;
   $('#cert').hidden=!done;
-  if(done){$('#certName').textContent=S.name;$('#certText').textContent='أنهيت الألعاب الثلاث وجمعت '+ar(tot)+' نجمة من '+ar(9)+'. أنت تعرف الآلاف جيداً!';}
+  if(done){$('#certName').textContent=S.name;$('#certText').textContent='أنهيت الألعاب الثلاث وجمعت '+ar(tot)+' نجوم من '+ar(9)+'. أنت تعرف الآلاف جيداً!';}
 }
 let bubbleTimer=0;
 function say(msg,ms){
