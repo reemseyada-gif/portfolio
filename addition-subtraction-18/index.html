@@ -68,6 +68,17 @@ button{font:inherit;color:inherit}
 .dr{cursor:grab;touch-action:none}
 .dr.lifted{opacity:.25}
 .dr.sel{outline:4px solid var(--yellow);outline-offset:3px;transform:translateY(-4px)}
+.ndlg{position:fixed;inset:0;z-index:3000;display:grid;place-items:center;padding:16px;background:rgba(43,42,76,.45);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.ndlg.hide{display:none}
+.ncard{width:min(100%,380px);background:var(--paper);border:3px solid var(--line);border-radius:28px;padding:26px 22px 22px;text-align:center;box-shadow:0 30px 60px -20px rgba(0,0,0,.4)}
+.nface{font-size:64px;line-height:1;display:inline-block}
+.ncard h2{margin:8px 0 16px;font-size:1.6rem}
+#nameIn{width:100%;font:inherit;font-size:1.35rem;font-weight:700;text-align:center;padding:12px 14px;border:3px solid var(--line);border-radius:16px;background:#FFFCF6;color:var(--ink);outline:none;-webkit-user-select:text;user-select:text}
+#nameIn:focus{border-color:var(--blue)}
+.nerr{min-height:1.4em;color:var(--bad);font-weight:700;margin:8px 0}
+.ncard .btn{width:100%}
+.ncard.shake{animation:shake .4s}
+.who{display:block;margin:10px auto 0;border:0;background:rgba(255,255,255,.75);border-radius:999px;padding:6px 14px;font-weight:700;color:#2B4A6B;cursor:pointer}
 .ghost{position:fixed!important;z-index:1000;pointer-events:none;margin:0!important;transform:scale(1.12) rotate(-4deg)!important;
   filter:drop-shadow(0 12px 14px rgba(0,0,0,.25));opacity:1!important;outline:none!important}
 [data-drop].over{outline:4px solid var(--yellow)!important;outline-offset:4px}
@@ -296,8 +307,9 @@ body.dragging .mouth,.monster.over .mouth{height:56px}
     <div class="hero-in">
       <span class="kicker">الجمع والطرح ضمن ١٨</span>
       <h1>مغامرة <span class="p">الجمع</span> و<span class="m">الطرح</span></h1>
-      <p class="sub">اختر لعبتك وابدأ المغامرة! 🎈</p>
+      <p class="sub" id="hello">اختر لعبتك وابدأ المغامرة! 🎈</p>
       <div class="total">نجومي ⭐ <span id="totalStars">٠</span></div>
+      <button class="who" id="whoBtn" type="button" style="visibility:hidden">✏️ تغيير الاسم</button>
     </div>
     <div class="grass" aria-hidden="true">
       <span class="buddy" data-t="523">🐸</span><span class="buddy" data-t="587">🍎</span><span class="buddy big" data-t="392">🚂</span><span class="buddy" data-t="659">👾</span><span class="buddy" data-t="698">🌷</span>
@@ -332,6 +344,16 @@ body.dragging .mouth,.monster.over .mouth{height:56px}
   </div>
 </section>
 
+<div class="ndlg hide" id="nameDlg" role="dialog" aria-modal="true" aria-labelledby="nTitle">
+  <form class="ncard" id="nameForm" autocomplete="off">
+    <div class="nface" aria-hidden="true">🐸</div>
+    <h2 id="nTitle">ما اسمك يا صديقي؟</h2>
+    <input id="nameIn" maxlength="20" placeholder="اكتب اسمك هنا" aria-label="اسمك">
+    <p class="nerr" id="nErr" aria-live="polite"></p>
+    <button class="btn" type="submit">هيا نبدأ المغامرة 🚀</button>
+  </form>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/SplitText.min.js"></script>
 <script>
@@ -354,7 +376,11 @@ function tone(fs,type='sine'){
       g.gain.exponentialRampToValueAtTime(.0001,t+.24);o.connect(g).connect(actx.destination);o.start(t);o.stop(t+.28);});
   }catch(e){}
 }
-const store={get(){try{return JSON.parse(localStorage.getItem('as18')||'{}')}catch(e){return{}}},set(v){try{localStorage.setItem('as18',JSON.stringify(v))}catch(e){}}};
+/* النجوم محفوظة لكل طفل باسمه على هذا الجهاز */
+const DB={load(){try{return JSON.parse(localStorage.getItem('as18p')||'{}')}catch(e){return{}}},save(d){try{localStorage.setItem('as18p',JSON.stringify(d))}catch(e){}}};
+let player=DB.load().current||'';
+const store={get(){const d=DB.load();return(d.players&&d.players[player])||{};},
+  set(v){const d=DB.load();d.players=d.players||{};d.players[player]=v;d.current=player;DB.save(d);}};
 
 /* طبقة الحركة: GSAP إن توفرت ولم يطلب الجهاز تقليل الحركة، وإلا تبقى حركات CSS البسيطة */
 const GS=!!window.gsap&&!matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -467,7 +493,8 @@ function say(t,cls){const f=$('#fb');f.textContent=t||'';f.className='fb '+(cls|
 function miss(msg){G.first=false;say(msg||'حاول مرة أخرى 💪','bad');tone([300,220],'triangle');}
 function won(msg){
   G.results[G.round-1]=G.first?'star':'ok';
-  say(msg||PRAISE[rnd(0,PRAISE.length-1)],'ok');tone([660,830,990]);confetti();
+  const nm=player?` يا ${player}`:'',P=['أحسنت','ممتاز','رائع جدًا','أنت بطل','عمل جميل','مذهل'],E=['🌟','👏','🎉','🏆','⭐','🚀'],pi=rnd(0,5);
+  say(msg||(P[pi]+nm+'! '+E[pi]),'ok');tone([660,830,990]);confetti();
   const idx=G.round-1,from=$('#ans')||$('#eq');
   if(G.first&&GS){FX.starTo(from,$('#dots').children[idx],()=>{drawDots();FX.pop($('#dots').children[idx]);});}
   else{drawDots();FX.pop($('#dots').children[idx]);}
@@ -774,7 +801,7 @@ const GAMES=[
 ];
 function show(id){['#home','#play','#done'].forEach(s=>$(s).classList.toggle('hide',s!==id));scrollTo(0,0);FX.screen($(id));
   heroLoops.forEach(t=>id==='#home'?t.resume():t.pause());}
-function renderHome(){
+function renderHome(anim=true){
   const best=store.get();let total=0;
   $('#gameCards').innerHTML=GAMES.map((g,i)=>{const b=best[g.id]||0;total+=b;
     return `<button class="gcard" data-g="${g.id}" style="--c:${g.c};animation-delay:${i*.07}s"><div class="ic">${g.icon}</div><h2>${g.title}</h2><p>${g.desc}</p><div class="best">${b?'⭐ '+ar(b)+' / '+ar(ROUNDS):'ابدأ ▶'}</div></button>`;}).join('');
@@ -782,7 +809,7 @@ function renderHome(){
   document.querySelectorAll('.gcard').forEach(c=>c.onclick=()=>start(c.dataset.g));
   if(GS){
     const cards=document.querySelectorAll('.gcard');
-    FX.enter(cards,{y:40,scale:.9,rotation:()=>rnd(-4,4),stagger:.07,duration:.7,delay:homeIntroDone?0:1.2});
+    if(anim)FX.enter(cards,{y:40,scale:.9,rotation:()=>rnd(-4,4),stagger:.07,duration:.7,delay:homeIntroDone?0:1.2});
     if(matchMedia('(hover: hover) and (pointer: fine)').matches)cards.forEach(c=>{
       c.style.transformPerspective='700px';
       const rx=gsap.quickTo(c,'rotationX',{duration:.4}),ry=gsap.quickTo(c,'rotationY',{duration:.4}),yy=gsap.quickTo(c,'y',{duration:.3});
@@ -855,7 +882,8 @@ function finish(){
   cleanup();
   const stars=G.results.filter(r=>r==='star').length;
   const best=store.get();best[G.game.id]=Math.max(best[G.game.id]||0,stars);store.set(best);
-  $('#doneTitle').textContent=stars>=5?'أنت بطل! 🏆':stars>=3?'عمل رائع! 🎉':'أحسنت المحاولة! 💪';
+  const nm=player?` يا ${player}`:'';
+  $('#doneTitle').textContent=stars>=5?`أنت بطل${nm}! 🏆`:stars>=3?`عمل رائع${nm}! 🎉`:`أحسنت المحاولة${nm}! 💪`;
   $('#bigStars').innerHTML=Array.from({length:ROUNDS},(_,i)=>`<span class="${i<stars?'':'off'}" style="animation-delay:${i*.12}s">⭐</span>`).join('');
   $('#doneMsg').textContent=`حصلت على ${ar(stars)} نجوم من ${ar(ROUNDS)} في «${G.game.title}»`;
   show('#done');if(stars>=3){confetti();tone([523,659,784,1046]);}
@@ -868,7 +896,30 @@ $('#homeBtn').onclick=()=>{cleanup();renderHome();show('#home');};
 $('#menuBtn').onclick=()=>{renderHome();show('#home');};
 $('#againBtn').onclick=()=>start(G.game.id);
 $('#soundBtn').onclick=()=>{soundOn=!soundOn;$('#soundBtn').textContent=soundOn?'🔊':'🔇';};
-heroIntro();renderHome();
+/* نافذة الاسم */
+function greet(){
+  $('#hello').textContent=player?`أهلًا يا ${player} 👋 اختر لعبتك وابدأ المغامرة!`:'اختر لعبتك وابدأ المغامرة! 🎈';
+  $('#whoBtn').style.visibility=player?'visible':'hidden';
+}
+function askName(){
+  const dlg=$('#nameDlg'),inp=$('#nameIn');
+  inp.value=player||'';$('#nErr').textContent='';dlg.classList.remove('hide');
+  setTimeout(()=>inp.focus(),50);
+  if(GS){gsap.fromTo('.ncard',{scale:.7,autoAlpha:0},{scale:1,autoAlpha:1,duration:.6,ease:'back.out(2)'});
+    gsap.fromTo('.nface',{rotation:-20,y:-10},{rotation:0,y:0,duration:1,ease:'elastic.out(1,.35)',delay:.2});}
+}
+$('#nameForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const v=$('#nameIn').value.replace(/\s+/g,' ').trim();
+  if(!v){$('#nErr').textContent='اكتب اسمك أولًا لنبدأ اللعب ✏️';const c=$('.ncard');c.classList.remove('shake');void c.offsetWidth;c.classList.add('shake');tone([300,220],'triangle');return;}
+  player=v;const d=DB.load();d.current=v;d.players=d.players||{};d.players[v]=d.players[v]||{};DB.save(d);
+  $('#nameDlg').classList.add('hide');tone([523,659,784]);greet();renderHome(false);
+  if(GS)gsap.fromTo('#hello',{scale:.8},{scale:1,duration:.7,ease:'elastic.out(1,.4)'});
+});
+$('#whoBtn').onclick=askName;
+
+heroIntro();greet();renderHome();
+if(!player)setTimeout(askName,GS?1600:0);
 </script>
 </body>
 </html>
