@@ -303,6 +303,11 @@ html{overflow-x:clip}
 .rail-bar i{display:block;height:100%;background:var(--ink);transform:scaleX(0);transform-origin:left}
 @media (max-width:999px){.rail{display:none}}
 
+
+/* numerals without the dotted zero of the mono font */
+.ch-n,.ch-of,.rail,.fact .num{font-family:"IBM Plex Sans",system-ui,sans-serif;font-variant-numeric:tabular-nums lining-nums}
+.ch-n{font-weight:300;letter-spacing:-.05em}
+.fact .num{font-weight:400}
 /* motion support */
 .m [data-in]{visibility:hidden}
 html.lenis,html.lenis body{height:auto}
