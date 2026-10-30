@@ -28,7 +28,9 @@ try{var q=new URLSearchParams(location.search).get('lang');if(q==='ar'||q==='en'
 if(!l){try{l=localStorage.getItem('lang');}catch(e){}}
 if(l!=='ar'&&l!=='en'){var ls=navigator.languages||[navigator.language||'en'];l='en';for(var i=0;i<ls.length;i++){var c=String(ls[i]).slice(0,2).toLowerCase();if(c==='ar'||c==='en'){l=c;break;}}}
 d.lang=l;d.dir=l==='ar'?'rtl':'ltr';
-try{var t=localStorage.getItem('theme');if(t)d.dataset.theme=t;}catch(e){}})();
+try{var t=localStorage.getItem('theme');if(t)d.dataset.theme=t;}catch(e){}
+/* motion: hide intro pieces only while the GSAP intro is pending; a timer guarantees they appear */
+try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('m');setTimeout(function(){d.classList.remove('m');},3000);}}catch(e){}})();
 </script>
 <style>
 /* Layout: a typeset maths-paper page. Asymmetric hero (name + statement, margin note on the side), work shown through live previews in two-column rows that open into a window, a short method section, about, contact, signature footer. */
@@ -271,6 +273,43 @@ dialog.win[open]{display:grid;grid-template-rows:auto 1fr;animation:pop .32s cub
 .fact span{color:var(--muted);font-size:14.5px}
 @media (max-width:700px){.facts .wrap{grid-template-columns:1fr 1fr}.fact{padding:20px 14px;border-top:1px solid var(--rule)}.fact:nth-child(-n+2){border-top:0}.fact:nth-child(odd){border-inline-start:0;padding-inline-start:0}}
 
+
+/* ===== chapters: every work on its own band ===== */
+html{overflow-x:clip}
+.work{gap:0}
+.piece{position:relative;padding-block:clamp(44px,6.5vw,92px) clamp(56px,8vw,112px);row-gap:clamp(22px,3vw,40px)}
+.piece:nth-child(even){background:var(--surface);box-shadow:0 0 0 100vmax var(--surface);clip-path:inset(0 -100vmax)}
+.piece::before{content:"";position:absolute;top:0;left:50%;width:100vw;margin-left:-50vw;height:1px;background:var(--rule)}
+.work .piece:last-child{border-bottom:0}
+.ch-head{grid-column:1/-1;order:-1;display:flex;align-items:flex-end;gap:clamp(14px,2.2vw,28px);direction:ltr}
+[dir="rtl"] .ch-head{direction:rtl}
+.ch-n{font:500 clamp(64px,10.5vw,148px)/.78 var(--f-mono);letter-spacing:-.07em;color:var(--ink);display:inline-block;padding-inline-end:.04em}
+.ch-line{flex:1;height:1.5px;background:var(--ink);margin-bottom:.6em;transform-origin:left center}
+[dir="rtl"] .ch-line{transform-origin:right center}
+.ch-of{display:inline-flex;align-items:center;gap:10px;font:400 13px var(--f-mono);color:var(--muted);margin-bottom:.35em;direction:ltr;white-space:nowrap}
+.ch-of i{width:12px;height:12px;border-radius:3px;background:var(--tint);box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
+.piece .stage{box-shadow:inset 0 0 0 1px rgba(0,0,0,.04)}
+/* hover moves the device with individual properties, so scroll parallax (transform) never fights it */
+.device{transition:translate .45s cubic-bezier(.2,.8,.2,1),rotate .45s cubic-bezier(.2,.8,.2,1)}
+.stage:hover .device{transform:none;translate:0 -8px;rotate:-.6deg}
+@media (max-width:860px){.ch-line{margin-bottom:.45em}}
+
+/* chapter rail: shows which chapter you are in while the work section is on screen */
+.rail{position:fixed;z-index:25;bottom:22px;inset-inline-start:22px;display:flex;align-items:center;gap:12px;padding:9px 16px;border-radius:999px;background:color-mix(in srgb,var(--surface) 92%,transparent);border:1px solid var(--rule);box-shadow:0 14px 30px -18px var(--shadow);font:500 13px var(--f-mono);color:var(--ink);direction:ltr;opacity:0;translate:0 12px;pointer-events:none;transition:opacity .35s,translate .35s}
+.rail.on{opacity:1;translate:0 0}
+.rail-k{color:var(--accent)}
+.rail-of{color:var(--muted)}
+.rail-bar{width:90px;height:2px;background:var(--rule);border-radius:2px;overflow:hidden}
+.rail-bar i{display:block;height:100%;background:var(--ink);transform:scaleX(0);transform-origin:left}
+@media (max-width:999px){.rail{display:none}}
+
+/* motion support */
+.m [data-in]{visibility:hidden}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+.lenis.lenis-smooth [data-lenis-prevent]{overscroll-behavior:contain}
+.lenis.lenis-stopped{overflow:hidden}
+
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition:none !important}
   .hl{background-size:100% 100%}.sign path{stroke-dashoffset:0}
@@ -297,15 +336,15 @@ dialog.win[open]{display:grid;grid-template-rows:auto 1fr;animation:pop .32s cub
 <section class="hero">
   <div class="wrap">
     <div>
-      <span class="label" data-k="role">Mathematics teacher · Learning designer</span>
-      <h1 lang="en">Reem <em>Eyada</em></h1>
-      <p class="statement" data-k="statement">I turn maths lessons into things children can <span class="hl">touch, play and get right</span>, then measure what they learned.</p>
-      <div class="links-row">
+      <span class="label" data-in data-k="role">Mathematics teacher · Learning designer</span>
+      <h1 lang="en" data-in>Reem <em>Eyada</em></h1>
+      <p class="statement" data-in data-k="statement">I turn maths lessons into things children can <span class="hl">touch, play and get right</span>, then measure what they learned.</p>
+      <div class="links-row" data-in>
         <a class="btn" href="#work"><span data-k="seeWork">See the work</span> <span class="arr">→</span></a>
         <button class="btn line" type="button" data-open="numbers" data-k="playGame">Play a game</button>
       </div>
     </div>
-    <figure class="plot" id="plot" aria-hidden="true">
+    <figure class="plot" id="plot" data-in aria-hidden="true">
       <svg viewBox="0 0 480 360">
         <g class="grid"></g>
         <path class="axis" d="M50 310H462M50 310V28"/>
@@ -326,8 +365,8 @@ dialog.win[open]{display:grid;grid-template-rows:auto 1fr;animation:pop .32s cub
 
 <section class="facts" aria-label="At a glance">
   <div class="wrap">
-    <div class="fact"><b class="num" data-to="2">0</b><span data-k="f1">Learning games</span></div>
-    <div class="fact"><b class="num" data-to="6">0</b><span data-k="f2">Interactive activities</span></div>
+    <div class="fact"><b class="num" data-to="3">0</b><span data-k="f1">Learning games</span></div>
+    <div class="fact"><b class="num" data-to="9">0</b><span data-k="f2">Interactive activities</span></div>
     <div class="fact"><b class="num" data-to="120">0</b><span data-k="f3">Students in the analytics sample</span></div>
     <div class="fact"><b class="num" data-to="2">0</b><span data-k="f4">Languages, Arabic and English</span></div>
     <div class="fact" id="statBox" hidden><b class="num" id="statN"></b><span data-k="statL">Children who have played</span></div>
@@ -341,7 +380,8 @@ dialog.win[open]{display:grid;grid-template-rows:auto 1fr;animation:pop .32s cub
       <p data-k="workP">Each piece runs live. Open one to try it right here.</p>
     </div>
     <div class="work">
-      <article class="piece">
+      <article class="piece" style="--tint:#F2DFD4">
+        <div class="ch-head" aria-hidden="true"><span class="ch-n">01</span><span class="ch-line"></span><span class="ch-of"><i></i>/ 05</span></div>
         <button class="stage" type="button" data-open="numbers" style="--tint:#F2DFD4" aria-label="My First Numbers">
           <span class="device phone"><span class="screen"><iframe data-src="numbers-1-2-3/" data-w="390" title="My First Numbers" tabindex="-1" loading="lazy"></iframe></span></span>
           <span class="open" data-k="openTag">Open ↗</span>
@@ -355,7 +395,8 @@ dialog.win[open]{display:grid;grid-template-rows:auto 1fr;animation:pop .32s cub
         </div>
       </article>
 
-      <article class="piece">
+      <article class="piece" style="--tint:#D9E6EE">
+        <div class="ch-head" aria-hidden="true"><span class="ch-n">02</span><span class="ch-line"></span><span class="ch-of"><i></i>/ 05</span></div>
         <button class="stage" type="button" data-open="thousands" style="--tint:#D9E6EE" aria-label="The Thousands Journey">
           <span class="device phone"><span class="screen"><iframe data-src="thousands-game/" data-w="390" title="The Thousands Journey" tabindex="-1" loading="lazy"></iframe></span></span>
           <span class="open" data-k="openTag">Open ↗</span>
@@ -369,7 +410,8 @@ dialog.win[open]{display:grid;grid-template-rows:auto 1fr;animation:pop .32s cub
         </div>
       </article>
 
-      <article class="piece">
+      <article class="piece" style="--tint:#EDE3F5">
+        <div class="ch-head" aria-hidden="true"><span class="ch-n">03</span><span class="ch-line"></span><span class="ch-of"><i></i>/ 05</span></div>
         <button class="stage" type="button" data-open="expanded" style="--tint:#EDE3F5" aria-label="Expanded and Standard Form">
           <span class="device phone"><span class="screen"><iframe data-src="expanded-form/" data-w="390" title="Expanded and Standard Form" tabindex="-1" loading="lazy"></iframe></span></span>
           <span class="open" data-k="openTag">Open ↗</span>
@@ -383,7 +425,8 @@ dialog.win[open]{display:grid;grid-template-rows:auto 1fr;animation:pop .32s cub
         </div>
       </article>
 
-      <article class="piece">
+      <article class="piece" style="--tint:#DDE7DF">
+        <div class="ch-head" aria-hidden="true"><span class="ch-n">04</span><span class="ch-line"></span><span class="ch-of"><i></i>/ 05</span></div>
         <button class="stage" type="button" data-open="balance" style="--tint:#DDE7DF" aria-label="The Balancing Act">
           <span class="device browser"><span class="screen"><iframe data-src="balancing-act/" data-w="1280" title="The Balancing Act" tabindex="-1" loading="lazy"></iframe></span></span>
           <span class="open" data-k="openTag">Open ↗</span>
@@ -397,7 +440,8 @@ dialog.win[open]{display:grid;grid-template-rows:auto 1fr;animation:pop .32s cub
         </div>
       </article>
 
-      <article class="piece">
+      <article class="piece" style="--tint:#E4E1EE">
+        <div class="ch-head" aria-hidden="true"><span class="ch-n">05</span><span class="ch-line"></span><span class="ch-of"><i></i>/ 05</span></div>
         <button class="stage" type="button" data-open="analytics" style="--tint:#E4E1EE" aria-label="Math Learning Analytics">
           <span class="device browser"><span class="screen"><iframe data-src="learning-analytics/" data-w="1280" title="Math Learning Analytics" tabindex="-1" loading="lazy"></iframe></span></span>
           <span class="open" data-k="openTag">Open ↗</span>
@@ -454,7 +498,9 @@ dialog.win[open]{display:grid;grid-template-rows:auto 1fr;animation:pop .32s cub
   </div>
 </footer>
 
-<dialog class="win" id="win" aria-labelledby="wTitle">
+<div class="rail" id="rail" aria-hidden="true"><span class="rail-k">§1</span><span class="rail-n" id="railN">01</span><span class="rail-bar"><i id="railBar"></i></span><span class="rail-of">05</span></div>
+
+<dialog class="win" id="win" data-lenis-prevent aria-labelledby="wTitle">
   <div class="wbar">
     <span class="url" id="wUrl"></span>
     <button type="button" id="wCopy" data-k="wCopy">Copy link</button>
@@ -631,6 +677,120 @@ document.getElementById('copyMail').addEventListener('click',()=>copy('reemseyad
 /* signature draws when the footer appears */
 const sign=document.getElementById('sign');
 if('IntersectionObserver' in window)new IntersectionObserver((es,o)=>{if(es[0].isIntersecting){sign.classList.add('go');o.disconnect();}},{threshold:.6}).observe(sign);else sign.classList.add('go');
+})();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/SplitText.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.20/dist/lenis.min.js"></script>
+<script>
+/* motion system: GSAP + ScrollTrigger + SplitText, Lenis as the only smooth-scroll engine */
+(function(){
+  const root=document.documentElement;
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduce||!window.gsap||!window.ScrollTrigger){root.classList.remove('m');return;}
+  const hasSplit=!!window.SplitText;
+  gsap.registerPlugin(ScrollTrigger);if(hasSplit)gsap.registerPlugin(SplitText);
+  gsap.defaults({ease:'power3.out',duration:.8});
+  const isRTL=()=>root.dir==='rtl';
+
+  /* smooth scroll */
+  let lenis=null;
+  if(window.Lenis){
+    lenis=new Lenis({lerp:.11,smoothWheel:true});
+    lenis.on('scroll',ScrollTrigger.update);
+    gsap.ticker.add(t=>lenis.raf(t*1000));
+    gsap.ticker.lagSmoothing(0);
+    document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{
+      const id=a.getAttribute('href');const t=id==='#top'?0:document.querySelector(id);
+      if(t===null)return;e.preventDefault();lenis.scrollTo(t,{offset:-68,duration:1.2});
+      if(t&&t.focus){t.setAttribute('tabindex','-1');t.focus({preventScroll:true});}
+    }));
+    const win=document.getElementById('win');
+    if(win)new MutationObserver(()=>win.open?lenis.stop():lenis.start()).observe(win,{attributes:true,attributeFilter:['open']});
+  }
+
+  /* split headings into words only while they animate, then restore the plain text */
+  const live=new Set();
+  function splitWords(el){
+    if(!hasSplit)return null;
+    const s=SplitText.create(el,{type:'words',mask:'words',aria:'auto'});live.add(s);return s;
+  }
+  function done(s){if(s){s.revert();live.delete(s);}}
+  // switching language rewrites these nodes: restore any split first (capture phase runs before the switch)
+  document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('#langBtn')){live.forEach(s=>s.revert());live.clear();}},true);
+
+  /* hero intro */
+  const intro=gsap.timeline({defaults:{duration:.9}});
+  gsap.set('[data-in]',{visibility:'visible'});root.classList.remove('m');
+  const h1=document.querySelector('.hero h1');
+  const hs=splitWords(h1);
+  intro.from('.hero .label[data-in]',{autoAlpha:0,y:12,duration:.6})
+       .from(hs?hs.words:h1,{yPercent:105,autoAlpha:hs?1:0,stagger:.09,duration:1.1,ease:'expo.out'},'-=.3')
+       .from('.statement',{autoAlpha:0,y:24},'-=.7')
+       .from('.hero .links-row > *',{autoAlpha:0,y:16,stagger:.08,duration:.6},'-=.55')
+       .from('.plot',{autoAlpha:0,scale:.96,y:20,duration:1.1},'-=1')
+       .eventCallback('onComplete',()=>done(hs));
+
+  /* section headings: words rise from a mask */
+  gsap.utils.toArray('.sec-top h2, .contact h2, .about blockquote').forEach(h=>{
+    gsap.set(h,{autoAlpha:0});
+    ScrollTrigger.create({trigger:h,start:'top 86%',once:true,onEnter:()=>{
+      gsap.set(h,{autoAlpha:1});
+      const s=splitWords(h);
+      if(s)gsap.from(s.words,{yPercent:110,stagger:.05,duration:.9,ease:'expo.out',onComplete:()=>done(s)});
+      else gsap.from(h,{autoAlpha:0,y:24});
+    }});
+  });
+
+  /* supporting content: batched fade-up */
+  const soft=gsap.utils.toArray('.sec-top p, .fact, .method > *, .about p, .contact .label, .contact > .wrap > p, .contact .reach, .contact .links-row, .also');
+  gsap.set(soft,{autoAlpha:0,y:28});
+  ScrollTrigger.batch(soft,{start:'top 90%',once:true,onEnter:els=>gsap.to(els,{autoAlpha:1,y:0,stagger:.08,duration:.7,overwrite:true})});
+
+  /* chapters */
+  const pieces=gsap.utils.toArray('.work .piece');
+  pieces.forEach(p=>{
+    const n=p.querySelector('.ch-n'),line=p.querySelector('.ch-line'),of=p.querySelector('.ch-of');
+    const stage=p.querySelector('.stage'),info=p.querySelectorAll('.info > *');
+    gsap.set(line,{scaleX:0});
+    gsap.set([n,of,...info],{autoAlpha:0});
+    gsap.set(stage,{clipPath:'inset(14% 9% 14% 9% round 10px)'});
+    const tl=gsap.timeline({paused:true});
+    tl.fromTo(n,{autoAlpha:0,yPercent:40},{autoAlpha:1,yPercent:0,duration:.9,ease:'expo.out'})
+      .to(line,{scaleX:1,duration:1.1,ease:'power2.inOut'},'<.1')
+      .to(of,{autoAlpha:1,duration:.5},'-=.5')
+      .to(stage,{clipPath:'inset(0% 0% 0% 0% round 10px)',duration:1.2,ease:'expo.out'},'<-.6')
+      .fromTo(info,{autoAlpha:0,y:24},{autoAlpha:1,y:0,stagger:.07,duration:.7},'<.25');
+    ScrollTrigger.create({trigger:p,start:'top 78%',once:true,onEnter:()=>tl.play()});
+  });
+
+  /* gentle depth on large screens: the device drifts against the scroll */
+  const mm=gsap.matchMedia();
+  mm.add('(min-width: 861px)',()=>{
+    pieces.forEach(p=>{
+      const d=p.querySelector('.device');if(!d)return;
+      gsap.fromTo(d,{yPercent:7},{yPercent:-7,ease:'none',scrollTrigger:{trigger:p,start:'top bottom',end:'bottom top',scrub:.6}});
+    });
+  });
+
+  /* chapter rail */
+  const rail=document.getElementById('rail'),railN=document.getElementById('railN'),railBar=document.getElementById('railBar');
+  const work=document.getElementById('work');
+  if(rail&&work){
+    const setBar=gsap.quickSetter(railBar,'scaleX');
+    ScrollTrigger.create({trigger:'.work',start:'top 60%',end:'bottom 60%',
+      onToggle:self=>rail.classList.toggle('on',self.isActive),
+      onUpdate:self=>setBar(self.progress)});
+    pieces.forEach((p,i)=>ScrollTrigger.create({trigger:p,start:'top 60%',end:'bottom 60%',
+      onToggle:self=>{if(self.isActive)railN.textContent=String(i+1).padStart(2,'0');}}));
+  }
+
+  /* keep measurements right after fonts, previews and language changes */
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>ScrollTrigger.refresh());
+  addEventListener('load',()=>ScrollTrigger.refresh());
+  const lb=document.getElementById('langBtn');
+  if(lb)lb.addEventListener('click',()=>requestAnimationFrame(()=>ScrollTrigger.refresh()));
 })();
 </script>
 </body>
