@@ -20,7 +20,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%231B2422'/%3E%3Cpath d='M12 48V16h11c7 0 9 4 9 8s-3 8-9 8h-11M22 32l11 16M38 48V16l8 16 8-16v32' fill='none' stroke='%23F1EFE6' stroke-width='4.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&display=swap">
 <script>
 /* choose language and theme before first paint: saved choice, then ?lang=, then the browser's language */
 (function(){var d=document.documentElement,l=null;
@@ -305,6 +305,9 @@ html{overflow-x:clip}
 
 
 /* numerals without the dotted zero of the mono font */
+/* every former mono text (labels, email, phone, links, figures) uses a font whose zero is a plain ring */
+:root{--f-mono:"IBM Plex Sans","IBM Plex Sans Arabic",system-ui,sans-serif}
+.label,.mail,.idx,.idx-s,.plot text,.wbar .url,.ch-n,.ch-of,.rail,.fact .num{font-variant-numeric:tabular-nums lining-nums}
 .ch-n,.ch-of,.rail,.fact .num{font-family:"IBM Plex Sans",system-ui,sans-serif;font-variant-numeric:tabular-nums lining-nums}
 .ch-n{font-weight:300;letter-spacing:-.05em}
 .fact .num{font-weight:400}
